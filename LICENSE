@@ -1,0 +1,43 @@
+        DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+                    Version 2, December 2004
+
+ Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
+ Copyright (C) 2026 teaualune <teaualune@gmail.com>
+
+ Everyone is permitted to copy and distribute verbatim or modified
+ copies of this license document, and changing it is allowed as long
+ as the name is changed.
+
+            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+
+  0. You just DO WHAT THE FUCK YOU WANT TO.
+
+------------------------------------------------------------------------
+
+                 TRADEMARK & THIRD-PARTY DISCLAIMERS
+       (informational notices — not part of the license above)
+
+"Claude", "Claude Code", and "Anthropic" are trademarks of Anthropic,
+PBC. This project is an independent, community-made bundle of skill
+files for use with Claude Code. It is not affiliated with, sponsored
+by, or endorsed by Anthropic. The license above applies only to the
+contents of this repository and grants no rights to the "Claude" or
+"Anthropic" names, trademarks, or products. References to Claude and
+Claude Code in this repository serve solely to identify the tool these
+skills are designed to run with.
+
+"Flutter" and "Dart" are trademarks of Google LLC. This project is not
+affiliated with, sponsored by, or endorsed by Google or the Flutter
+team, and the license above grants no rights to those names or
+trademarks.
+
+The Flutter/Dart packages referenced in this repository — including
+but not limited to Riverpod, go_router, Dio, freezed, json_serializable,
+build_runner, bloc/flutter_bloc, provider, GetX, MobX, auto_route,
+chopper, retrofit, get_it, and others named in the skill files — are
+the property of their respective authors and are governed by their own
+licenses. This repository does not bundle or redistribute any of these
+packages; their names appear solely to identify the technologies the
+generated code may target. No affiliation with or endorsement by any
+package author is implied.
