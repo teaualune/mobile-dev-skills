@@ -1,11 +1,12 @@
 # flutter-feature skill bundle
 
-Portable copy of the two-phase Flutter feature workflow. Drop these four folders into a target project's `.claude/skills/` directory.
+Portable copy of the two-phase Flutter feature workflow. Drop these five folders into a target project's `.claude/skills/` directory.
 
 - `flutter-feature/` — the orchestrator (user-invoked via `/flutter-feature`); runs Phase 1 (requirements → spec → TBD-resolution loop → approval) and Phase 2 (implementation)
 - `feature-intake/` — interactive requirement gathering (Intake Sheet)
 - `flutter-feature-spec/` — spec document production
 - `flutter-feature-scaffold/` — code generation rules + Riverpod/go_router/Dio templates
+- `flutter-feature-spec-compact/` — standalone spec maintenance (not part of the orchestrated chain): folds a spec's accumulated change records (changelogs, addenda, phased deltas) back into its base sections so only the current state remains, asking first whether the removed history should be extracted to a sibling changelog file
 
 The `Explore` and `Plan` subagents referenced by `flutter-feature` are built-in Claude Code agent types — nothing extra to install.
 
@@ -15,13 +16,13 @@ Prerequisite: [Claude Code](https://claude.com/claude-code) installed and workin
 
 ### Into an existing Flutter project
 
-Copy the four skill folders into the project's `.claude/skills/` directory (create it if it doesn't exist):
+Copy the five skill folders into the project's `.claude/skills/` directory (create it if it doesn't exist):
 
 ```bash
 cd /path/to/this/bundle
 mkdir -p /path/to/your-flutter-app/.claude/skills
 cp -R flutter-feature feature-intake flutter-feature-spec flutter-feature-scaffold \
-  /path/to/your-flutter-app/.claude/skills/
+  flutter-feature-spec-compact /path/to/your-flutter-app/.claude/skills/
 ```
 
 Commit `.claude/skills/` so the whole team gets the workflow.
@@ -34,7 +35,7 @@ Create the project first, then install the same way:
 flutter create my_app
 mkdir -p my_app/.claude/skills
 cp -R flutter-feature feature-intake flutter-feature-spec flutter-feature-scaffold \
-  my_app/.claude/skills/
+  flutter-feature-spec-compact my_app/.claude/skills/
 ```
 
 Note for brand-new projects: the workflow detects the tech stack from existing code, and a fresh `flutter create` app has none of it yet. Either add your chosen packages (state management, routing, HTTP) to `pubspec.yaml` before the first feature, or accept the announced fallback stack (Riverpod + go_router + Dio + freezed) when the skill asks.
@@ -47,7 +48,7 @@ Copy the folders into `~/.claude/skills/` instead — personal skills are availa
 
 1. Run `claude` in the project root.
 2. Type `/flutter-feature` — it should autocomplete. Invoke it with a feature description, e.g. `/flutter-feature add a saved-articles screen with bookmarking`.
-3. Only `/flutter-feature` is invoked directly; it orchestrates the other three skills (intake → spec → scaffold) automatically.
+3. `/flutter-feature` is the workflow entry point; it orchestrates the intake → spec → scaffold skills automatically. `flutter-feature-spec-compact` sits outside that chain — invoke it (or let it auto-trigger on "compact the spec") when an existing spec has accumulated change history worth cleaning up.
 
 ## Per-project adjustments
 
