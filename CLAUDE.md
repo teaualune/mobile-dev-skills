@@ -6,6 +6,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A Claude Code **plugin** (plugin name: `flutter-skills`, manifests in `.claude-plugin/`) bundling seven Flutter skills under `skills/`, in two independent families: a two-phase feature workflow (requirements → spec → approval → implementation) and a build & store-deploy pipeline. It contains no buildable app: the content is `SKILL.md` prompt files plus template files (Dart reference material and a shell-script template) that are copied into target projects, never compiled or executed here. There are no build, lint, or test commands. Deployment is `/plugin install` (via the repo's own marketplace manifest) or manually copying folders from `skills/` into a target project's `.claude/skills/`.
 
+### Verifying a change
+
+The only end-to-end check is loading the checkout as a plugin from a real Flutter project and invoking the skill:
+
+```bash
+cd /path/to/a-flutter-app && claude --plugin-dir /path/to/flutter-feature-skills
+# then: /flutter-skills:flutter-feature …
+```
+
+Root `analysis_options.yaml` excludes `**/*` from the Dart analyzer **on purpose**: `skills/flutter-feature-scaffold/templates/*.dart` import packages this repo doesn't depend on (there is no `pubspec.yaml` here) and declare `part 'example.freezed.dart'` files that will never exist. They are prompt material, not compilable code — don't "fix" the templates to satisfy an analyzer, and don't narrow the exclude.
+
 ## Architecture — how the skills chain
 
 ### Feature workflow
@@ -37,10 +48,12 @@ Several rules are deliberately restated in multiple skills; changing one copy wi
 - **Intake Sheet section names/order**: `feature-intake` defines them; `flutter-feature` Step 1.3 and the spec template's sections map onto them.
 - **Spec template structure**: `flutter-feature-spec` defines the ten-section layout; `flutter-feature-spec-compact` promises to preserve whatever structure a spec file uses (its fold rules reference the template's "N/A — don't delete sections silently" convention), so template restructures should be sanity-checked against the compact skill's Step 3.
 - **build-version.sh interface**: `flutter-build-deploy`'s SKILL.md restates the template's contract — the CLI flags (`-v`/`-i`/`-a`/`--flavor`/`--dry-run`), the pubspec version-bookkeeping convention (`version: <name>+<iosBuild>` plus the `# android: <androidBuild> = …` comment line), the printed `iOS archive:` / `Output:` lines, and the `build/build-version-artifacts.env` manifest (keys `IOS_ARCHIVE_PATH`, `ANDROID_AAB_PATH`, …). Changing any of these in `templates/build-version.sh` requires the same change in that SKILL.md, and vice versa.
+- **store-deploy script exit codes + stdout keys**: `flutter-store-deploy`'s SKILL.md branches on values its `scripts/` define in their header comments — `ios_find_archive.sh` (0 selected / 2 ambiguous / 3 no match / 4 usage, printing `ARCHIVE_PATH=`/`VERSION=`/`BUILD=`/`CREATION_DATE=`), `ios_upload.sh` (4 = config problem, `--dry-run` prints the merged plist), `android_phase_select.sh` (`CONFIG_PRESENT=`/`PHASE=`/`SERVICE_ACCOUNT_KEY=`/`SERVICE_ACCOUNT_KEY_ERROR=`/hints; 4 = invalid config), and `android_phase1_upload.sh` (**42 = auth/permission failure, the only code that permits the Phase 2 fallback**; any other non-zero must stop the deploy). Renumbering an exit code or renaming a `KEY=VALUE` line silently changes control flow in the SKILL.md — change both together.
 - **Build → deploy handoff**: `flutter-build-deploy` Step 5 passes explicit artifact paths; `flutter-store-deploy`'s Inputs section promises to skip discovery when paths are supplied. Both files state the deal — keep them aligned. `flutter-build-deploy` also defers to `flutter-store-deploy`'s rules (setup mode, Phase 2 rollout pause, idempotency/no-auto-bump) rather than restating them; don't duplicate those rules into the build skill.
 
 ## Conventions
 
 - The bundle must stay **project-agnostic**. Concrete paths, commands, and doc conventions (e.g. `docs/specs/`, `fvm` prefixes, `.stg` flavor suffixes) are illustrative examples users may replace per README's "Per-project adjustments" — never hardcode a specific project's names or rules. For the deploy family, project-specific values belong in the target project (`scripts/build-version.sh`'s ADAPT block, `.flutter-store-deploy/`), never in the skills.
 - Skill `description:` frontmatter doubles as the auto-trigger condition; each one also states what the skill must NOT be used for. Preserve that pattern when editing.
+- Neither `.claude-plugin/plugin.json` nor `marketplace.json` enumerates skills — `skills/` is auto-discovered, so adding a skill means adding a folder with a `SKILL.md` and nothing else. What the manifests *do* carry (plugin `description`, `version`, keywords) duplicates README's framing; keep the skill count and family split in sync across README, plugin.json, marketplace.json, and this file when a skill is added or removed. Only `flutter-feature` sets `disable-model-invocation: true`; the other six are model-invocable by design.
 - `templates/` folders hold files copied into target projects and adapted, not literal copy-paste output: `flutter-feature-scaffold/templates/*.dart` (pairs for with/without codegen: `entity_freezed`/`entity_manual`, `provider_codegen`/`provider_manual`), `flutter-build-deploy/templates/build-version.sh` (ADAPT block), `flutter-store-deploy/templates/` (ExportOptions default + example project config). By contrast, `flutter-store-deploy/scripts/` are executables run from the installed skill directory — keep them project-agnostic and non-interactive.

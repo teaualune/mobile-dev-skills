@@ -89,7 +89,7 @@ If the project has no docs convention, default to the `flutter-feature-spec` ski
 
 Invoke the `flutter-feature-spec` skill to turn the populated Intake Sheet into the spec document. Two overrides on top of that skill:
 
-- **File location/naming follows the conventions discovered in Step 1.3** (e.g. `docs/specs/<feature-name>-feature-spec.md`), not the skill's default `feature-spec.md`, whenever the project has an established spec directory.
+- **File location/naming follows the conventions discovered in Step 1.4** (e.g. `docs/specs/<feature-name>-feature-spec.md`), not the skill's default `feature-spec.md`, whenever the project has an established spec directory.
 - You may delegate the writing to a subagent: point it at the Intake Sheet, 1–2 example spec docs as style references, and the API reference doc. Review its output yourself before presenting it — you own the deliverable.
 
 If the spec updates an existing document rather than creating a new one, preserve the existing document's structure and only change what the feature changes.
