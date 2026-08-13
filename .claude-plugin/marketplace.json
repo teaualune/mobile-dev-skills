@@ -1,0 +1,14 @@
+{
+  "name": "flutter-skills",
+  "owner": {
+    "name": "teaualune",
+    "email": "teaualune@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "flutter-skills",
+      "source": "./",
+      "description": "Flutter workflows for Claude Code: two-phase feature development (intake → spec → approval → scaffold), spec maintenance, and build & store deployment (version bump → TestFlight / Play internal testing)."
+    }
+  ]
+}

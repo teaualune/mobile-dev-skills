@@ -1,0 +1,27 @@
+{
+  "_readme": [
+    "Examples of the two optional per-project config files in .flutter-store-deploy/ at the project root.",
+    "Copy each top-level object below into its own file: .flutter-store-deploy/ios.json and .flutter-store-deploy/android.json.",
+    "ios.json holds verbatim ExportOptions.plist keys, deep-merged over templates/ExportOptions.default.plist (project value wins).",
+    "For automatic signing, ios.json can be as small as: {\"signingStyle\": \"automatic\"}.",
+    "android.json: serviceAccountKeyPath enables Phase 1 (Play Developer API); when absent, Phase 2 (Claude in Chrome) is used with the hints below.",
+    "This config is safe to commit — the service-account key itself must live OUTSIDE the repo."
+  ],
+  "ios.json": {
+    "signingStyle": "manual",
+    "teamID": "ABCDE12345",
+    "signingCertificate": "Apple Distribution",
+    "provisioningProfiles": {
+      "com.example.app": "Example App Store Profile"
+    }
+  },
+  "android.json": {
+    "serviceAccountKeyPath": "~/secrets/play-service-account.json",
+    "developerId": "1234567890123456789",
+    "teamName": "Example Team LLC",
+    "appNames": {
+      "production": "Example App",
+      "staging": "Example App (Staging)"
+    }
+  }
+}
