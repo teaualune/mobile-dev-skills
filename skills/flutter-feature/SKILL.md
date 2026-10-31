@@ -50,6 +50,7 @@ Detected stack (from pubspec.yaml + sample files):
 - Serialization: <e.g. freezed + json_serializable, or manual fromJson/toJson>
 - Codegen: <yes (build_runner) / no>
 - Other relevant packages: <get_it, flutter_hooks, equatable, etc.>
+- Flutter/Dart command: <`fvm flutter` / `fvm dart` (.fvmrc + fvm installed), or plain `flutter` / `dart`>
 
 Proceeding with this stack. Confirm or correct?
 ```
@@ -87,10 +88,11 @@ If the project has no docs convention, default to the `flutter-feature-spec` ski
 
 ### Step 1.5 — Write the spec (`flutter-feature-spec`)
 
-Invoke the `flutter-feature-spec` skill to turn the populated Intake Sheet into the spec document. Two overrides on top of that skill:
+Invoke the `flutter-feature-spec` skill to turn the populated Intake Sheet into the spec document. Three overrides on top of that skill:
 
 - **File location/naming follows the conventions discovered in Step 1.4** (e.g. `docs/specs/<feature-name>-feature-spec.md`), not the skill's default `feature-spec.md`, whenever the project has an established spec directory.
-- You may delegate the writing to a subagent: point it at the Intake Sheet, 1–2 example spec docs as style references, and the API reference doc. Review its output yourself before presenting it — you own the deliverable.
+- **Chinese-language text in spec documents must be Traditional Chinese only** — never Simplified, in every project and in every later edit to the spec.
+- You may delegate the writing to a subagent: point it at the Intake Sheet, 1–2 example spec docs as style references, and the API reference doc, and state the Traditional Chinese rule in its prompt. Review its output yourself before presenting it — you own the deliverable.
 
 If the spec updates an existing document rather than creating a new one, preserve the existing document's structure and only change what the feature changes.
 
@@ -122,7 +124,7 @@ Follow `flutter-feature-scaffold` for generation order, templates, and hard rule
 
 ### Step 2.3 — Post-generation
 
-Run the project's own commands as documented in its CLAUDE.md/README (typically `dart run build_runner build --delete-conflicting-outputs` for codegen, `flutter gen-l10n` if ARB files changed, `flutter analyze` — prefixed with `fvm` if the project uses fvm). Then output the post-generation checklist from `flutter-feature-scaffold`, including any TBDs still unresolved from the spec and, if applicable, the "Provisional — must replace before launch" list.
+Run the project's own commands as documented in its CLAUDE.md/README (typically `dart run build_runner build --delete-conflicting-outputs` for codegen, `flutter gen-l10n` if ARB files changed, `flutter analyze`), routed through `fvm` per the operating principle below. Then output the post-generation checklist from `flutter-feature-scaffold`, including any TBDs still unresolved from the spec and, if applicable, the "Provisional — must replace before launch" list.
 
 ---
 
@@ -158,6 +160,7 @@ Subagents start cold: always pass file paths (spec, examples, report) rather tha
 - **One question per turn, ideally.** Don't dump a 12-question form on the user. Group tightly related questions only when splitting would feel unnatural.
 - **Reflect back before asking more.** When the user gives a chunk of info, briefly restate your understanding ("So screen A navigates to B after a successful POST to /foo — right?") before asking the next thing.
 - **Detect, don't assume.** For anything project-specific (folder structure, theme tokens, error widgets, base API client), look at existing code or ask.
+- **`fvm` when the project pins it.** If the project root has `.fvmrc` **and** `fvm` is installed (`command -v fvm` succeeds), run every Flutter/Dart command through it — `fvm flutter …`, `fvm dart …` — even where the project's docs show plain `flutter`/`dart`; this includes commands in subagent prompts and in the post-generation checklist. If only one of the two is present, default to plain `flutter`/`dart` but first ask the caller whether they want `fvm` instead, saying which one you found (e.g. "`.fvmrc` present but `fvm` not installed"). If neither is present, use plain `flutter`/`dart` without asking. Settle this once, in Step 1.2, and report it in the Detected Stack statement.
 - **Be concrete about gaps.** If the user hasn't mentioned error, loading, or empty states for a new screen, ask. These get forgotten and bite later.
 - **Treat Figma as visual ground truth.** When a Figma reference is provided, capture specific details (spacing, color tokens, component variants) in the spec so the implementer doesn't drift.
 

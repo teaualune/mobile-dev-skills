@@ -65,9 +65,11 @@ Note for brand-new projects: the feature workflow detects the tech stack from ex
 
 - Spec doc location/naming (e.g. `docs/specs/<feature-name>-feature-spec.md`, `docs/specs/artifacts/`) and API reference (e.g. `docs/api-reference.md`)
 - Any language conventions the project enforces for spec documents
-- Post-generation commands (e.g. `dart run build_runner build --delete-conflicting-outputs`, `flutter gen-l10n`, `flutter analyze`, with an `fvm` prefix if the project uses it)
+- Post-generation commands (e.g. `dart run build_runner build --delete-conflicting-outputs`, `flutter gen-l10n`, `flutter analyze`)
 
 The skill discovers these conventions dynamically when they differ, so the bundle works as-is; hardcoding the target project's values just gives it better defaults.
+
+Two rules are built in rather than discovered: Chinese text in spec documents is always Traditional Chinese, and Flutter/Dart commands run through `fvm` (`fvm flutter …`, `fvm dart …`) when the project has `.fvmrc` and `fvm` is installed; otherwise it uses plain `flutter`/`dart`, asking first whether you want `fvm` only when exactly one of the two is present.
 
 ### Build & deploy
 
