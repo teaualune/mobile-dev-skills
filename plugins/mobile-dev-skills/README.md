@@ -90,7 +90,7 @@ The seven are refined copies of agents from [ECC](https://github.com/affaan-m/EC
 
 **Platform adapters** — what the feature workflow knows about Flutter sits in `platforms/flutter/`, apart from the skills: how the stack is detected, where reading a feature's code starts, the commands (through the fvm rule), the generation order, the code and test standards, the templates and the agents. The skills stay platform-neutral process, so another platform is a folder next to it. `platforms/swiftui/` is the second: native iOS apps with SwiftUI, built and tested with `xcodebuild` on a simulator (Xcode 16 or later), with Swift Testing tests. `platforms/compose/` is the third: native Android apps with Jetpack Compose, built with the project's Gradle wrapper and Android Lint (Kotlin 2.0.20, AGP 8.5.2 and JDK 17 or later), with JUnit 4 tests on the JVM and screen tests under Robolectric. Its tests are named like ``fun `saved-articles_1 Empty`()``, since a JVM method name can't hold the id's `.`. Compose has no build script yet, so `mobile-build-deploy` hands a bundle built in Android Studio or with Gradle to `mobile-store-deploy`. Invoke `/mobile-dev-skills:feature-workflow` the same way in any of these projects.
 
-**Native code and permissions** — a feature that needs Swift or Kotlin code, a new permission or a capability gets it in the spec: section 4 lists each native interface (Pigeon or a platform channel) and each permission with its usage string, and section 6 tags behavior that differs per platform. Phase 2 writes the native side, the `Info.plist` and `AndroidManifest.xml` entries and the denial scenario's test, and builds each native project it touched. Each new iOS usage key also goes into `REQUIRED_USAGE_KEYS` of `scripts/build-version.sh`, in a Flutter or a SwiftUI app, which `mobile-build-deploy` checks against the specs before every iOS build. The SwiftUI adapter is the native adapter for iOS: it adds its Swift standards, `swift-reviewer` and `swift-build-resolver` for the Swift code. The Compose adapter does the same for Android's Kotlin code, with `kotlin-reviewer` and `kotlin-build-resolver`.
+**Native code and permissions** — a feature that needs Swift or Kotlin code, a new permission or a capability gets it in the spec: section 4 lists each native interface (Pigeon or a platform channel) and each permission with its usage string, and section 6 tags behavior that differs per platform. Phase 2 writes the native side, the `Info.plist` and `AndroidManifest.xml` entries and the denial scenario's test, and builds each native project it touched. Each new iOS usage key also goes into `REQUIRED_USAGE_KEYS` of `scripts/build-version.sh`, in a Flutter or a SwiftUI app, which `mobile-build-deploy` checks against the specs before every iOS build. The SwiftUI adapter is the native adapter for iOS: it adds its Swift standards, `swift-reviewer` and `swift-build-resolver` for the Swift code. The Compose adapter does the same for Android's Kotlin code, with `kotlin-reviewer` and `kotlin-build-resolver`. Logic that must run without the Flutter engine, such as work in a background wake, gets native unit tests (Swift Testing in the Runner workspace's unit-test target, JUnit under `android/app/src/test/`), which the verification run and `feature-verify` run with the native adapter's commands; a platform this machine can't run is left as a manual check.
 
 All skills live under `skills/`, the agents under `agents/` and the adapters under `platforms/`. The `Explore`, `Plan` and `general-purpose` subagents referenced by `feature-workflow` are built-in Claude Code agent types — nothing extra to install.
 
@@ -163,6 +163,18 @@ Note for brand-new projects: the feature workflow detects the tech stack from ex
 The skill discovers these conventions dynamically when they differ, so the bundle works as-is; hardcoding the target project's values just gives it better defaults.
 
 Code and test rules come from `platforms/standards.md` and the adapter's own `standards.md` (e.g. no `!` null assertion in hand-written Dart, no force unwrap in Swift, no `!!` in Kotlin). A project adds its own, or replaces a bundled rule by naming it, in `.mobile-dev-skills/standards.md`; when you correct generated code for a reason that holds for every feature, the scaffold offers to add the rule there.
+
+Beside its `## Code` and `## Tests` rules, that file may have a `## Workflow` part with two optional lines:
+
+```markdown
+## Workflow
+
+Skills: tca-reference, swiftdata-reference
+Pause after each task: yes
+```
+
+- `Skills:` names your project's own skills (a TCA or SwiftData reference, say). The scaffold, Phase 2's implementation subagents and a trivial change load them before writing code, and name them on their `Standards:` line, a skill that isn't installed included; the built-in review may load them as reference. Where a skill's advice differs from the standards, the standards win.
+- `Pause after each task: yes` stops Phase 2 after each task: the workflow shows the task's files and test results, and waits for you to say go on. To pause for one run only, ask for it in the conversation. The verification run and the review don't pause.
 
 The workflow keeps its state in the target project:
 - `.mobile-dev-skills/` at the project root holds the confirmed tech stack, plus, per feature, the Intake Sheet, the Phase 2 task list and the run reports, which record each verification check as PASS, FAIL or SKIPPED;

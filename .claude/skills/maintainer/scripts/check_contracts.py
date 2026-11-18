@@ -923,7 +923,7 @@ def check_release(repo, anchors):
         status = re.split(r" — | \(", cl[4], maxsplit=1)[0]
         if status not in rel["statuses"]:
             repo.out.add("FAIL", c, where, f"Status {cl[4][:40]!r} doesn't start with one of {rel['statuses']}")
-        elif status in ("partly", "passed", "failed"):
+        elif status in ("partly", "passed", "failed", "fixed"):
             ev = evidence.match(cl[4])
             day = None
             if ev:

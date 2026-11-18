@@ -59,7 +59,7 @@ Read in this order; each step informs the next.
    - The design system → `Color` / `Font` extensions, asset catalog color names, spacing constants
    - A test file, if there is one → Swift Testing or XCTest, `@testable import`, where fakes live, snapshot setup; with TCA, `TestStore` and its exhaustivity
 4. **Navigation**: the root view (`NavigationStack`, `TabView`), how destinations are declared (a `Route` enum, `NavigationLink(value:)`, a router or coordinator), and deep links (`onOpenURL`, universal links).
-5. **Localization**: a String Catalog (`Localizable.xcstrings`) or `.strings` files per `.lproj`, how keys are written (`Text("key")`, `String(localized:)`, SwiftGen's `L10n`), and the languages it holds.
+5. **Localization**: a String Catalog (`Localizable.xcstrings`) or `.strings` files per `.lproj`, how keys are written (`Text("key")`, `String(localized:)`, the catalog's generated symbols such as `Text(.keyName)`, SwiftGen's `L10n`), and the languages it holds.
 
 **Without filesystem access**, ask the user to paste the output of `xcodebuild -list`, the deployment target, the package list (`Package.resolved` or `Podfile`), one existing feature folder's file tree, one representative view with its view model, the navigation root, and a test file. Don't proceed without the package list.
 
@@ -87,7 +87,7 @@ Detected conventions:
 - Views: <e.g. @State var viewModel, .task loading, shared LoadingView / ErrorView, ContentUnavailableView for empty>
 - Navigation: <e.g. Route enum, navigationDestination(for: Route.self) in RootView>
 - Design system: <e.g. Color.brand*, Font.app* extensions>
-- Localization: <e.g. Localizable.xcstrings with en and zh-Hant, Text("key")>
+- Localization: <e.g. Localizable.xcstrings with en and zh-Hant, Text("key"), or generated symbols, Text(.keyName)>
 - Access control: <e.g. internal types, private members>
 - Tests: <e.g. GreeterTests/ mirrors Greeter/, Swift Testing, fakes in GreeterTests/Fakes — or "no tests yet">
 - Exemplar: <the feature folder(s) read end to end>
@@ -139,7 +139,7 @@ String Catalogs and `.strings` files compile in the build, so l10n has no comman
 
 The Tests output names a failing test by `<suite>/<function>()`, not by its description; the anchored-test reader below maps one to the other.
 
-**Native build** is `none`: this is a native app, and Analyze already builds everything a run touches. In a Flutter project, the Flutter adapter's Native build compiles the `ios/` folder, and this adapter adds only its standards and agents there ("Native interop").
+**Native build** is `none`: this is a native app, and Analyze already builds everything a run touches. In a Flutter project, the Flutter adapter's Native build compiles the `ios/` folder, and this adapter adds only its standards, its agents and its test commands there ("Native interop").
 
 ### Other commands
 
@@ -223,7 +223,7 @@ How a SwiftUI spec fills the platform-dependent parts of the `feature-spec` temp
 
 ## Standards
 
-`standards.md` in this folder: the Swift and SwiftUI rules, on top of the common `../standards.md`. In a Flutter project's `ios/` folder only its rules for every Swift file apply ("Native interop").
+`standards.md` in this folder: the Swift and SwiftUI rules, on top of the common `../standards.md`. In a Flutter project's `ios/` folder only its rules for every Swift file apply, and the test rules it names for native unit tests ("Native interop").
 
 ## Templates
 
@@ -246,7 +246,7 @@ Other stacks (`ObservableObject`, TCA, Alamofire, coordinators, etc.) and target
 What a SwiftUI feature needs from iOS itself, and what this adapter adds to another framework's iOS folder.
 
 - **Platforms:** `ios`, the app's own target, in Swift.
-- **Native adapter for:** `ios`. In a Flutter project, this adapter's "Standards" and "Agents" also apply to the Swift files a run writes in the `ios/` folder; nothing else of it applies there, since the Flutter adapter's "Native interop" says where that code goes and its Native build compiles it.
+- **Native adapter for:** `ios`. In a Flutter project, this adapter's "Standards" and "Agents" also apply to the Swift files a run writes in the `ios/` folder, and its "Commands" run the native unit tests there: its command rule, on the container and scheme the Flutter adapter's "Native interop" names, and its commands for a layer's tests, the Tests check, the test-name search and the anchored tests. Nothing else of it applies there, since the Flutter adapter's "Native interop" says where that code goes and its Native build compiles it.
 - **Mechanism:** the one the spec names, ranked in "Spec notation": a system framework behind a protocol, with no bridge between languages.
 - **Native code** goes where the project keeps its services (a `Services/` folder, or the feature's folder), mirroring the existing ones. The view model gets the protocol through its initializer, the way it gets its repository. Native code does only what section 4 states: a method whose behavior the spec doesn't give is a gap to ask about, never a stub.
 - **Declarations**, one per section 4 permission or capability row:

@@ -11,7 +11,7 @@ Generate the code and tests for an approved feature spec. **Detect the project's
 
 When `feature-workflow` invoked this skill, use the adapter it loaded. Read the adapter in full, except when implementing one chunk (Step 1), and read its "Native interop" only when the spec's section 4 lists native interfaces, permissions or capabilities. "The adapter" below means that file, and the adapter's sections are named in quotes.
 
-**Native adapters.** Native code a feature writes for a platform the adapter's "Native interop" lists follows that section. When another adapter says `**Native adapter for:** <that platform>` (`grep -H 'Native adapter for:' ${CLAUDE_SKILL_DIR}/../../platforms/*/PLATFORM.md`), its "Standards" also apply to the native files in the language that line names, and its "Agents" review them and fix their native build; nothing else of it is read. Native files in another language (an older project's, e.g. Java) follow the project's own native files and the common standards, with no native review; a failing native build still goes to that build fixer. Without a native adapter, all of them do, with no native review or build fixer.
+**Native adapters.** Native code a feature writes for a platform the adapter's "Native interop" lists follows that section. When another adapter says `**Native adapter for:** <that platform>` (`grep -H 'Native adapter for:' ${CLAUDE_SKILL_DIR}/../../platforms/*/PLATFORM.md`), its "Standards" also apply to the native files in the language that line names, and its "Agents" review them and fix their native build. Native unit tests in that platform's folder, where the adapter's "Native interop" gives native logic tests of its own, also take its "Commands": its command rule, on the container that section names, settled once like the adapter's and saved as a `## Command` line of its own in `stack.md`, and its commands for a layer's tests, the Tests check, the test-name search and the anchored tests. Nothing else of it is read. Native files in another language (an older project's, e.g. Java) follow the project's own native files and the common standards, with no native review; a failing native build still goes to that build fixer. Without a native adapter, all of them do, with no native review, build fixer or native unit tests.
 
 ## Step 1 — Detect tech stack + conventions BEFORE writing any code
 
@@ -53,7 +53,9 @@ Wait for confirmation, save the confirmed report to `stack.md`, then generate.
 
 Run this in every session that writes code, before its first file: also when Step 1 reused a saved stack, and when `feature-workflow` handed you one chunk. Read `${CLAUDE_SKILL_DIR}/../../platforms/standards.md` (every platform), the adapter folder's `standards.md` when it has one, and the project's `.mobile-dev-skills/standards.md` when it exists. When the spec has native code for a platform that has a native adapter (above), read its `standards.md` too, now, for those files. Then say in one line which files you read, as `Standards: <file>, <file>, no project file`, naming a native adapter's file with the files it covers: `platforms/<native adapter>/standards.md (<platform folder>/ files)`.
 
-Apply them to every file you write, tests included, on top of the confirmed conventions. A project rule wins over a bundled rule it names, and a standard wins over an exemplar. When the user corrects generated code for a reason that holds for every feature, offer the rule as a line for the project's file, and add it only if they accept.
+**The project's skills.** When the project's file has a `## Workflow` part with a `Skills: <skill>, …` line, load each skill it names with the Skill tool, after reading the standards and before the first file, and end the `Standards:` line with them: `…, skills: <a>, <b>`. A skill that isn't listed in this session is named there as missing, `<b> (not listed)`, never skipped silently. Use them as reference for the code they cover; where a skill's advice differs from a standard, the standard wins. The part's `Pause after each task:` line applies only in `feature-workflow`'s Step 2.2.
+
+Apply the standards to every file you write, tests included, on top of the confirmed conventions. A project rule wins over a bundled rule it names, and a standard wins over an exemplar. When the user corrects generated code for a reason that holds for every feature, offer the rule as a line for the project's file, and add it only if they accept.
 
 ## Step 3 — Generate file-by-file
 
@@ -88,6 +90,7 @@ Every section 6 scenario gets an automated test unless it is `N/A` or `manual`, 
 
 How tests are placed, named, asserted and faked is in the standards' "Tests" sections.
 
+- **Native unit tests**, where the adapter's "Native interop" tests native logic natively (for Flutter, logic that must run without the engine): each goes in the unit-test target or folder that section names for its platform, follows the native adapter's test rules (its `standards.md` names them), and runs with its commands, as "Native adapters" above says.
 - **Goldens**, when the Test plan has them: create each new image with the adapter's golden command, and list it under Manual checks. Regenerate an existing image only when the approved change alters how that screen looks, and list it too.
 - **Run** each layer's tests when they're written, with the adapter's command for a layer's tests, after the Codegen command when the layer added annotated files. A test that fails because the code departs from its scenario means the code is wrong: fix the code, not the expectation. If the scenario itself is wrong, stop and tell the user; that is a spec change.
 - **Test-first, on request.** When the user asks for it, write a scenario's test before its code and run it to see it fail for the expected reason.
@@ -117,7 +120,7 @@ When the spec's section 6 uses Requirement/Scenario blocks (`feature-spec`), rec
 Otherwise, once the spec anchors are filled, run the checks of the adapter's "Commands" table in its order (Codegen, l10n, Analyze, Format, Tests, Native build), then Conformance: the `feature-verify` skill on the spec, when section 6 has blocks. Write each command with the command from the Step 1 report (e.g. `fvm flutter analyze`). Where the project's CLAUDE.md or README documents its own form of a command, use that form, still with that command.
 
 - **Results.** Each check ends as `PASS`, `FAIL` or `SKIPPED — <why>`, taken from the command's output in this run, never from reading the code or from an earlier run. `SKIPPED` is only for a check that doesn't apply: its "Runs when" is false, or the user has said the project doesn't use it. A check that applies and couldn't run is a `FAIL`.
-- **Against the baseline.** Before the first file of Step 3, run Analyze and Tests on the untouched code, and Native build for each platform whose folder you will write in, and keep the result. A check fails on anything that wasn't there before, wherever it shows up. What was already there is reported, not fixed. Native build passes only when its builds succeed; one that fails at the baseline goes to the user before any native file is written.
+- **Against the baseline.** Before the first file of Step 3, run Analyze and Tests on the untouched code (Tests with the native unit tests of each platform whose native tests you will write or the spec anchors), and Native build for each platform whose folder you will write in, and keep the result. A check fails on anything that wasn't there before, wherever it shows up. What was already there is reported, not fixed. Native build passes only when its builds succeed; one that fails at the baseline goes to the user before any native file is written.
 - **Conformance** fails only on what this run wrote or changed. `feature-verify`'s findings on older behavior (a scenario the run didn't touch, left at `test: none`, say; a scenario with a deferred `TBD`) and on tests the user skipped (`test: none — <reason>`) are listed, not failed.
 - **On a FAIL**, fix the cause in the files this run wrote and run again from the earliest check the fix can affect. Never make a check pass by weakening it: no loosened or deleted expectation, no `skip`, no suppression comment (`// ignore`). While a check fails, don't call the feature done.
 
@@ -129,6 +132,7 @@ Then output the closing notes:
 - [ ] Each new screen against its Figma reference
 - [ ] <each scenario marked `test: manual`: id, title and reason>
 - [ ] <native work, on a device per platform: each native interface method, each permission prompt with its usage string, and the denial path>
+- [ ] <each native build or native unit test run this machine couldn't do, with its command>
 - [ ] <capabilities to enable outside the code, e.g. in the Apple Developer account>
 - [ ] <permission or capability rows not declared in code, with why>
 - [ ] Affected existing screens, on a device
@@ -150,7 +154,7 @@ Then output the closing notes:
 ## Hard rules
 
 - **Never overwrite existing files without asking.** Show the user the existing file content (or path) and confirm.
-- **Never invent API endpoints, field names, or response shapes — except for documented provisional shapes.** If something is TBD in the spec, write a `// TODO(spec): <thing>` and surface it in the closing notes. If something is marked **provisional** in the spec (the API isn't ready yet, but the UI is proceeding), generate it as the standards' "Provisional shapes" rule says, with its `// TODO(api)` markers and stub repository, and add every provisional file to the closing notes under a dedicated "Provisional — must replace before launch" heading.
+- **Never invent API endpoints, field names, or response shapes — except for documented provisional shapes.** If something is TBD in the spec, write a `// TODO(spec): <thing>` and surface it in the closing notes. If something is marked **provisional** in the spec (the API isn't ready yet, but the UI is proceeding), generate it as the standards' "Provisional shapes" rule says, with its `// TODO(api)` markers, and with a stub repository only for a provisional endpoint: a provisional field on an existing endpoint keeps the real one. Add every provisional file to the closing notes under a dedicated "Provisional — must replace before launch" heading.
 - **Never skip error/loading/empty states.** If the spec doesn't give a screen's Loading, Error, Empty or Success behavior (a scenario, a bullet in an older section 6, or `N/A — <reason>`), ask before generating that screen — don't guess and don't omit.
 - **Don't introduce new dependencies** without flagging. If the spec implies you need a package the manifest doesn't list, ask before adding it, e.g. "This will require adding `cached_network_image` to pubspec.yaml — proceed?"
 

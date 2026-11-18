@@ -1,6 +1,6 @@
 # Standards — Jetpack Compose
 
-Rules for the Kotlin, Compose and Android code the feature workflow writes, on top of the common `../standards.md`. In a Flutter project's `android/` folder, only the rules under "Every Kotlin file" apply, to the Kotlin files a run writes there.
+Rules for the Kotlin, Compose and Android code the feature workflow writes, on top of the common `../standards.md`. In a Flutter project's `android/` folder, only the rules under "Every Kotlin file" apply, to the Kotlin files a run writes there, and **Form**, **Unescaped titles**, **Fakes**, **Persistence** and **Host tests** to its native unit tests (the Flutter adapter's "Native interop"), so their names are this platform's backtick form, which this adapter's test-name search finds. That project's other scenario tests follow its own adapter.
 
 ## Code
 

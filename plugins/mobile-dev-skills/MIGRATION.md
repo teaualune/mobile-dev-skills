@@ -68,7 +68,8 @@ A v0.2.0 spec keeps its ten sections and works as it is. What the current format
 
 | A v0.2.0 spec has | The current format has | Added by |
 |---|---|---|
-| Section 6 as bullets per screen | Requirement and Scenario blocks with ids, each anchored to its code and its test (`feature-spec`'s "Section 6 — Requirement and Scenario blocks") | `feature-spec`, on the spec's first non-trivial edit, after asking whether to convert: `feature-spec`'s "When updating an existing spec". Decline, and the spec keeps its bullets, and its verification runs skip the conformance check |
+| Section 6 as bullets per screen | Requirement and Scenario blocks with ids, each anchored to its code and its test (`feature-spec`'s "Section 6 — Requirement and Scenario blocks") | `feature-spec`, on the spec's first non-trivial edit, after asking whether to convert (`feature-spec`'s "When updating an existing spec"), by the rules in its `conversion.md` (section 3). Decline, and the spec keeps its bullets, and its verification runs skip the conformance check |
+| Sections other than the ten, such as an extra `New screens / widgets` | The ten sections, in order | The same conversion, which renumbers them first (`conversion.md`'s "The layout") |
 | No `Last verified` line | `> Last verified:` under the title, dated by the conformance check | The same conversion; `feature-verify` dates it after a full pass (`feature-verify`'s "`Last verified`") |
 | No spec index | An `index.md` beside the specs, with a row and a status per spec | `feature-workflow`, the first time a lookup reads the spec (`feature-workflow`'s "Spec index") |
 | No `### Test plan` in section 10 | How each layer of the feature is tested | The first change that adds or alters a scenario (`feature-spec`'s "When updating an existing spec") |
@@ -81,23 +82,18 @@ A v0.2.0 spec keeps its ten sections and works as it is. What the current format
 
 ## 3. Converting a spec by hand
 
-The recommended path is the one above: the skills convert a spec on its first non-trivial edit. To convert one sooner, without a change to go with it, do what that conversion does:
+The recommended path is the one above: the skills convert a spec on its first non-trivial edit. To convert one sooner, without a change to go with it, do what that conversion does. Its rules are in [`skills/feature-spec/conversion.md`](skills/feature-spec/conversion.md), the file the skill converts by; to convert several specs at once, give each to a subagent with that file. The steps:
 
-1. **The line under the title**, directly below it and above any other line there, such as compaction's revision-history pointer: `> Last verified: never (implemented, not yet verified)`, or `> Last verified: never (not implemented)` for a feature that isn't built yet.
-2. **The slug** of the ids: the feature's name in lowercase kebab-case (the `id` key in `feature-spec`'s "Section 6 — Requirement and Scenario blocks"). It is usually the spec file's name without `.md` and any `-feature-spec` suffix (`articles` for `articles-feature-spec.md`), the name compaction also gives the feature's changelog folder, but not for a file named only `feature-spec.md` or `spec.md`. If a feature run already saved a folder for the feature under `.mobile-dev-skills/`, use that folder's name.
-3. **Section 6 as blocks**, with nothing added and nothing dropped: every bullet becomes a requirement, a scenario or a line of one, and the rest of the spec stays as it is. Ids run from `<slug>.1`. The cited section gives the syntax (the comment keys, a SHALL sentence per requirement, one fact per line), and the template's own section 6 is a worked example (`feature-spec`'s "6. UI behavior per screen"). For each screen:
+1. **The layout.** A spec whose sections aren't the ten, in order, is renumbered first. An extra section, such as `New screens / widgets`, becomes a subsection of the section that shares its topic, its text unchanged, and a missing one is added with `N/A` (`conversion.md`'s "The layout").
+2. **The line under the title**, directly below it and above any other line there, such as compaction's revision-history pointer: `> Last verified: never (implemented, not yet verified)`, or `> Last verified: never (not implemented)` for a feature that isn't built yet (`conversion.md`'s "The line under the title").
+3. **The slug** of the ids: usually the spec file's name without `.md` and any `-feature-spec` suffix (`articles` for `articles-feature-spec.md`), or the name of the feature's folder under `.mobile-dev-skills/` when a feature run saved one (`conversion.md`'s "The slug").
+4. **Section 6 as blocks**: every bullet becomes a requirement, a scenario or a line of one, with ids from `<slug>.1`, and the rest of the spec stays as it is. A table maps each v0.2.0 bullet (`conversion.md`'s "Section 6 as blocks"). Intro prose, `### <Screen>` headings, layout sketches, a bare `Empty: N/A.` and a recorded "Tests: none" each have their place too (`conversion.md`'s "Section 6 beyond the bullets").
+5. **Anchors.** Point each `enforced` at the code that carries the behavior, and a scenario's `test` at an existing test only when its body checks every THEN and AND line (`conversion.md`'s "Anchors").
+6. **Check it.** The spec checker, `bash skills/feature-spec/scripts/check_spec.sh <spec path>`, should report no `syntax` or `layout` finding. Then `/mobile-dev-skills:feature-verify <spec path>` (`/feature-verify` in a manual copy) runs the anchored tests and lists each `enforced` placeholder as `not anchored` and each scenario without a test as `no test`, and it dates the `Last verified` line only after a run with no finding.
 
-   | v0.2.0 bullet | Becomes |
-   |---|---|
-   | Initial state | The statement of the screen's first requirement: what it requests or shows when it opens |
-   | Loading, Error, Empty and Success state | That requirement's `Loading`, `Error`, `Empty` and `Success` scenarios. A state the bullets say can't occur gets `N/A — <reason>` |
-   | User actions | A requirement per action, with its result as the THEN line. An action whose result differs when a request fails gets a second scenario for the failure, as the template's `Error — unsave fails` |
-   | Navigation triggers | A THEN or AND line naming the route, in the scenario of the action that opens it; one with no action bullet (a toolbar icon, back) becomes a requirement of its own |
-   | Side effects | AND lines in the scenario that causes them |
+Nothing is added or dropped. The conversion adds only what the checker needs and the anchors; a name the code shows was renamed may be corrected, and a behavior the code contradicts stays as written, with a section 8 item (`conversion.md`'s "What a conversion adds"). Don't fill gaps while you convert: a state or a result the bullets don't give is a question for the feature's next change.
 
-   Don't fill gaps while you convert: a state or a result the bullets don't give, or a rule another section states, is a question for the feature's next change.
-4. **Anchors.** Point each `enforced` at the code that carries the behavior, `<path>#<Symbol>`, and leave `(filled in Phase 2)` only where you can't name it. A scenario's `test` names an existing test only when its body checks what the scenario's THEN and AND lines say: `<path>#<description>`, the description exactly as the test's own string literal, without a `group` name. Otherwise it is `none` for behavior the app already has, `(filled in Phase 2)` in a spec of a feature not built yet, or `manual — <reason>` when no test in the project can reach it, such as a system sheet.
-5. **Check it:** `/mobile-dev-skills:feature-verify <spec path>` (`/feature-verify` in a manual copy). It runs the anchored tests and lists each `enforced` placeholder as `not anchored` and each scenario without a test as `no test`, and it dates the `Last verified` line only after a run with no finding.
+A project's own feature docs, in neither the ten sections nor v0.2.0's bullets, keep a layout they share. Freeform ones convert to the template, their dated addenda through `feature-spec-compact` first (`conversion.md`'s "A project's own feature docs").
 
 A refactor doesn't start while a block is `not anchored`, so anchor every `enforced` before asking for one.
 

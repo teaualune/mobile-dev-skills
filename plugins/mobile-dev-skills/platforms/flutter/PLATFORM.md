@@ -10,7 +10,7 @@ A `pubspec.yaml` whose `dependencies` include the Flutter SDK (`flutter:` with `
 
 - **Root:** the folder holding that `pubspec.yaml`. `.mobile-dev-skills/` sits here, and the skills resolve their paths and run their commands here; in a monorepo, it is the app's folder, not the repository's root.
 - **Manifest:** `pubspec.yaml`, the source of truth for the stack; its `dev_dependencies` list the test packages.
-- **Source:** `lib/`. **Host tests:** `test/`, which the verification run executes. `integration_test/` holds tests that need a device.
+- **Source:** `lib/`. **Host tests:** `test/`, which the verification run executes, and the native unit tests of `ios/` and `android/` ("Native interop"). `integration_test/` holds tests that need a device.
 - **Generated files**, never edited by hand and never anchored: `*.g.dart`, `*.freezed.dart`, `*.mapper.dart`, `*.gr.dart`, the generated l10n output, and Pigeon's output (the Dart, Swift and Kotlin files each input's `@ConfigurePigeon` names).
 - **Fingerprint** for `.mobile-dev-skills/stack.md`: the output of `grep -v -e '^version:' -e '^# android:' pubspec.yaml | cat - .fvmrc 2>/dev/null | git hash-object --stdin`, run at the root. It leaves out the version lines a release bumps.
 
@@ -124,18 +124,20 @@ The rule's inputs are the policy, whether `.fvmrc` exists and whether `fvm` is i
 | l10n | `<flutter> gen-l10n` | ARB files changed |
 | Analyze | `<flutter> analyze` | always |
 | Format | `<dart> format --output=none --set-exit-if-changed <files>`, on the hand-written Dart files this run wrote or edited | Dart files were written or edited |
-| Tests | `<flutter> test` | the project has a `test/` folder |
+| Tests | `<flutter> test`, then each platform's native unit tests with its native adapter's Tests command ("Native interop") | the project has a `test/` folder; native unit tests, for each platform whose native unit tests the tasks write or the spec anchors |
 | Native build | for `ios/`, `<flutter> build ios --simulator --debug`; for `android/`, `<flutter> build apk --debug` | this run wrote or edited files in that folder, or changed the manifest's dependencies; `ios/` only where `xcodebuild -version` succeeds |
 
 ARB→Dart is Flutter's `gen-l10n` (configured in `l10n.yaml`), not a `build_runner` target.
 
 **Native build** compiles the Swift and Kotlin code a run touches, which no other check sees. In a project with flavors (Android `productFlavors`, iOS schemes besides `Runner`), add `--flavor <name>`, the flavor its docs use for development, else ask. When the build's entry point isn't `lib/main.dart`, add it as `-t <file>`, from the run configurations or the build script's `BUILD_ARGS`. It passes only when every build it runs succeeds: there is no count to compare. The baseline runs it for each platform whose folder the run will write in, and a build that already fails there is shown to the user before any native file is written. A platform this machine can't build goes on the manual checks ("build for iOS on a Mac"); with neither platform left, the check is `SKIPPED`. Once it has passed, a fix reruns it only when the fix changed that platform's folder, the manifest or a Pigeon input.
 
+**Native unit tests** ("Native interop") run in the Tests check after `<flutter> test`, and count like the host tests against the baseline, which runs them too. A platform whose native command rule stops on this machine (no Xcode for `ios`, no JDK or Android SDK for `android`) goes on the manual checks ("run the `ios` native unit tests on a Mac"), and `feature-verify` lists its anchored tests as not run; the other tests still decide the check.
+
 ### Other commands
 
-- **A layer's tests**, as they are written: `<flutter> test <file>`.
-- **Test-name search** (`feature-verify`, a baseline): `grep -F -e "'<description>'" -e '"<description>"' <file>`. A description is one whole string literal.
-- **Anchored tests** (`feature-verify`): `<flutter> test --reporter expanded <files>`. Each test prints on its own line with its description and its result; a test run with a `variant` prints ` (variant: …)` after its description.
+- **A layer's tests**, as they are written: `<flutter> test <file>`. A native unit test runs with its native adapter's command ("Native interop").
+- **Test-name search** (`feature-verify`, a baseline): `grep -F -e "'<description>'" -e '"<description>"' <file>`. A description is one whole string literal. An anchor under `ios/` or `android/` is a native unit test: search it with its native adapter's command.
+- **Anchored tests** (`feature-verify`): `<flutter> test --reporter expanded --concurrency=1 <files>`, one file at a time, since files run in parallel can leave some of a file's tests out of the expanded output. Each test prints on its own line with its description and its result; a test run with a `variant` prints ` (variant: …)` after its description. Anchored native unit tests run with their native adapter's command ("Native interop").
 - **A new golden image:** `<flutter> test --update-goldens --plain-name '<description>' <file>`.
 - **Device tests:** `<flutter> test integration_test/<file>`, run by hand.
 
@@ -145,7 +147,7 @@ Concrete class and file names depend on the detected stack.
 
 1. **Entities** (and `.g.dart` / `.freezed.dart` / `.mapper.dart` reminders if codegen)
 2. **API client / repository** (uses whichever HTTP client is detected — Dio, http, chopper, retrofit), then its tests
-3. **Native interfaces**, when section 4 has them ("Native interop"): the Dart interface (a Pigeon input, or a class wrapping the channel), Codegen, each platform's implementation and its registration, then the tests of the Dart side, with the native side faked
+3. **Native interfaces**, when section 4 has them ("Native interop"): the Dart interface (a Pigeon input, or a class wrapping the channel), Codegen, each platform's implementation and its registration, with its native unit tests when the Test plan has them, then the tests of the Dart side, with the native side faked
 4. **State primitives**, then their tests — depends on detected state management:
    - Riverpod → providers (`Provider`, `FutureProvider`, `AsyncNotifier`, or `@riverpod` functions)
    - Bloc → events + states + the Bloc/Cubit class
@@ -189,7 +191,7 @@ How a Flutter spec fills the platform-dependent parts of the `feature-spec` temp
   3. a `MethodChannel('<app id>/<feature>')`, or an `EventChannel` for a stream, written like the project's existing channels;
   4. with neither, propose Pigeon or a plugin package; either is a new dependency, which the user approves in the spec.
 
-  Give argument and result types in Dart terms.
+  Give argument and result types in Dart terms. Logic that must run without the Flutter engine (a background wake, an app extension, a home-screen widget) is native code: say where it runs, and whether it is tested natively ("Native interop").
 - **Section 4 permissions:** keys as each platform declares them. iOS: the `Info.plist` key (`NSCameraUsageDescription`, `NFCReaderUsageDescription`), a `UIBackgroundModes` value, or an entitlement (`com.apple.developer.healthkit`). Android: the manifest permission (`android.permission.CAMERA`), with `maxSdkVersion` when it applies only up to an API level; runtime or install-time.
 - **Platform tags:** `ios` and `android`, the ids of "Native interop".
 - **Section 5:** the heading names the library, e.g. `## 5. State management (Riverpod)` or `## 5. State management (Bloc)`, and the table follows it:
@@ -220,7 +222,7 @@ How a Flutter spec fills the platform-dependent parts of the `feature-spec` temp
 - **Specific, per stack:** name the actual widget and the actual call, e.g. for Riverpod "Show `ErrorView` (existing) with retry button that re-invokes `savedArticlesProvider.future`", for Bloc "… that dispatches `SavedArticlesEvent.refresh()`".
 - **Section 7 localization:** where new strings go, e.g. ARB keys.
 - **Section 10 implementation order:** the "Generation order" as steps, e.g. 1. Entities + JSON mapping; 2. Repository + HTTP client wiring, then its tests; 3. State primitives (providers / blocs / notifiers), then their tests; 4. New screens — skeleton first, then states, then their widget tests; 5. Routing wiring (go_router / auto_route); 6. Edits to affected existing screens, with the tests that cover the change; 7. Manual QA pass against Figma. A feature with native work adds Native interfaces after the repository, Platform declarations after routing, and a pass on a device to the manual QA.
-- **Section 10 test kinds**, one Test plan line each, before Manual: **Unit** (repository and state primitives), **Widget** (`testWidgets`: each screen's states and actions), **Golden** (golden-file tests), **Integration** (flows on a device, under `integration_test/`).
+- **Section 10 test kinds**, one Test plan line each, before Manual: **Unit** (repository and state primitives), **Widget** (`testWidgets`: each screen's states and actions), **Golden** (golden-file tests), **Integration** (flows on a device, under `integration_test/`), and **Native unit** only when section 4 places logic in native code that is tested natively ("Native interop"): Swift Testing in the `ios` unit-test target, run with `xcodebuild test`, and JUnit under `android/app/src/test/`, run with `./gradlew :app:test<Variant>UnitTest`.
 
 ## Standards
 
@@ -249,7 +251,7 @@ Other stacks (Bloc, Provider, GetX, MobX, auto_route, chopper, etc.) have no tem
 What a Flutter feature needs when it reaches into the iOS or Android projects.
 
 - **Platforms:** `ios` (`ios/`, Swift, or Objective-C in older projects) and `android` (`android/`, Kotlin, or Java in older projects). Other platform folders (`macos/`, `web/`, `windows/`, `linux/`) aren't covered: ask before writing native code there.
-- **Native adapter for:** `none`. Flutter isn't a native platform; a native adapter for `ios` or `android` adds its standards and agents to that platform's files.
+- **Native adapter for:** `none`. Flutter isn't a native platform; a native adapter for `ios` or `android` adds its standards and agents to that platform's files, and its test commands to the native unit tests there (Testing).
 - **Mechanism:** the one the spec names, ranked in "Spec notation". Pigeon inputs go where the project's existing ones sit, else `pigeons/`.
 - **Native code** goes beside the project's existing native files, mirroring them and its existing channels:
   - `ios`: in `ios/Runner/`, registered where `AppDelegate.swift` registers plugins. With the UIScene lifecycle (Flutter ≥ 3.41; the delegate adopts `FlutterImplicitEngineDelegate`), that is `didInitializeImplicitFlutterEngine(_:)`, with `engineBridge.applicationRegistrar.messenger()`, which the engine's header names for app-level channels (`engineBridge.pluginRegistry.registrar(forPlugin:)` where a Flutter version lacks it); in an older `AppDelegate`, `application(_:didFinishLaunchingWithOptions:)`. Never through `window?.rootViewController`, which UIScene leaves nil.
@@ -259,7 +261,11 @@ What a Flutter feature needs when it reaches into the iOS or Android projects.
   - `ios`: an `Info.plist` key goes in each `Info.plist` the target's build configurations name in `INFOPLIST_FILE` (usually only `ios/Runner/Info.plist`), with the spec's usage string. A localized `InfoPlist.xcstrings` or `.strings` may translate it, but never replaces it, since App Store validation reads `Info.plist`. Each new usage key (`…UsageDescription`) also goes in `REQUIRED_USAGE_KEYS` of the project's `scripts/build-version.sh`, when it has one ("Build adapter"). An entitlement goes in the file each configuration's `CODE_SIGN_ENTITLEMENTS` names; with none, ask before adding one to the Xcode project. Enabling the capability in the Apple Developer account is a manual check.
   - `android`: `<uses-permission>` (or `<uses-feature>`) in `android/app/src/main/AndroidManifest.xml`, with `android:maxSdkVersion` where the spec gives one.
   - With `permission_handler`, each iOS permission also needs the setup its README lists (with CocoaPods, a `PERMISSION_…=1` macro in the `ios/Podfile` `post_install` block); without it the request returns denied without a prompt.
-- **Testing:** host tests reach native work through the Dart interface, faked like a repository (the standards' "Tests"). The native code itself is checked by the native build ("Commands") and on a device: the closing notes list each native method and permission prompt to try by hand.
+- **Testing:** host tests reach native work through the Dart interface, faked like a repository (the standards' "Tests"). Native logic that section 4 places in native code because it must run without the Flutter engine, or that the spec says is tested natively, also gets native unit tests in its platform's unit-test target. They follow the native adapter's standards, and run through its "Commands" (its command rule, a layer's tests, the Tests check, the test-name search, the anchored tests) with this project's container:
+  - `ios`: `ios/Runner.xcworkspace`, the scheme Native build builds (`Runner`, or the flavor's), and the unit-test target in that scheme's test action: Flutter's template creates `RunnerTests` from Flutter 3.10, and a project may have another, or none (the SwiftUI standards' **Host tests**). Before the first `xcodebuild` in a checkout, run `<flutter> build ios --config-only --simulator --debug`, with Native build's `--flavor` and `-t`: it writes `ios/Flutter/Generated.xcconfig` and, with CocoaPods, runs `pod install`, which a build of Runner needs. A new test file joins the target as the SwiftUI adapter's File registration says; Flutter's template project is group-based.
+  - `android`: `android/app/src/test/kotlin/`, with `android/` as the Gradle root, module `:app` and the variant `debug`, or `<flavor>Debug` with Native build's flavor. `gradlew` and `local.properties` are gitignored there; `<flutter> build apk --config-only` writes them. Flutter's template moves the module's build folder to `build/app/` at the project root (in `android/build.gradle` or `build.gradle.kts`), so the reports the Compose adapter reads under `<dir>/build/` are there. The template has no test dependencies: JUnit 4 (`junit:junit`) as a `testImplementation` is a new dependency the user approves.
+
+  The native code is also checked by the native build ("Commands"), and on a device: the closing notes list each native method and permission prompt to try by hand.
 
 ## Agents
 

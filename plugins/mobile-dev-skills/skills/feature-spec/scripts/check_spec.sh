@@ -55,6 +55,14 @@ function finding(check, line, msg) { nf++; F[nf] = check " " line " " msg }
 function level(s,   n) { n = 0; while (substr(s, n + 1, 1) == "#") n++; return (substr(s, n + 1, 1) == " " && n > 0) ? n : 0 }
 function reasoned(s, word) { return s ~ ("^" word " +(\342\200\224|\342\200\223|-) *[^ ]") }
 function is_state(part, w) { return part ~ ("^" w "([^A-Za-z0-9]|$)") }
+# A topic's template part: the first line of section sec matching re, a ### heading when head is set.
+function part(sec, re, head,   i) {
+  for (i = SS[sec] + 1; SS[sec] && i <= SE[sec]; i++) if ((head ? (H[i] == 3) : (H[i] == 0)) && tolower(L[i]) ~ re) return i
+  return 0
+}
+function twice(topic, at, sec, re, head, what,   p) {
+  if (at && (p = part(sec, re, head))) finding("layout", p, "section 9 (line " at ") names " topic " as not affected; leave out this " what)
+}
 # declined settles an item only as a marker after a dash or in parentheses, so a question about a declined card stays open.
 function settled(s) {
   s = tolower(trim(s))
@@ -99,6 +107,27 @@ END {
       if (!body) finding("layout", SL[k], "section " SN[k] " is empty; write its content or N/A with a reason")
     }
     for (s = 1; s <= 10; s++) if (!SEEN[s]) finding("layout", h1 ? h1 : 1, "section " s " is missing; keep it, with N/A and a reason if it doesn't apply")
+    # Check 5's double answer: a topic a section 9 "Not affected:" line names that keeps its template part.
+    for (k = 1; k <= ns; k++) if (SN[k] >= 1 && SN[k] <= 10 && !SS[SN[k]]) { SS[SN[k]] = SL[k]; SE[SN[k]] = (k < ns) ? SL[k + 1] - 1 : n }
+    for (i = SS[9] + 1; SS[9] && i <= SE[9]; i++) {
+      t = tolower(L[i])
+      if (H[i] != 0 || !sub(/^ *[-*] +([*][*])?not affected:([*][*])? */, "", t)) continue
+      # The topics come before the reason's dash.
+      if (match(t, /\342\200\224|\342\200\223| - /)) t = substr(t, 1, RSTART - 1)
+      if (t ~ /deep[ -]?links?/ && !NA["deep"]) NA["deep"] = i
+      if (t ~ /accessibility|a11y/ && !NA["a11y"]) NA["a11y"] = i
+      if (t ~ /locali[sz]ation|l10n/ && !NA["l10n"]) NA["l10n"] = i
+      if (t ~ /permission/ && !NA["perm"]) NA["perm"] = i
+      if (t ~ /native (code|interface)/ && !NA["native"]) NA["native"] = i
+      if (t ~ /offline/ && !NA["off"]) NA["off"] = i
+      if (t ~ /background|resume/ && !NA["bg"]) NA["bg"] = i
+    }
+    twice("deep links", NA["deep"], 2, "^ *[-*] +([*][*])?deep[ -]?links?", 0, "Deep links bullet")
+    twice("accessibility", NA["a11y"], 7, "^ *[-*] +([*][*])?accessibility", 0, "Accessibility line")
+    twice("localization", NA["l10n"], 7, "^ *[-*] +([*][*])?locali[sz]ation", 0, "Localization line")
+    twice("permissions", NA["perm"], 4, "^### +permissions", 1, "Permissions subsection")
+    twice("native code", NA["native"], 4, "^### +native interfaces?", 1, "Native interfaces subsection")
+    if (NA["bg"]) twice("offline and background / resume", NA["off"], 5, "^ *([-*] +)?([*][*])?offline and resume", 0, "Offline and resume note")
   }
 
   # Blocks: ### Requirement: / ### Invariant: and their #### Scenario: children.
@@ -245,7 +274,7 @@ END {
   if (nb && sec6s) for (i = sec6s + 1; i <= sec6e; i++)
     if (H[i] == 3 && L[i] !~ /^### +(Requirement|Invariant):/) finding("syntax", i, "a ### heading in section 6 that isn't a block")
 
-  # States: across the blocks naming a screen, Loading, Error, Empty and Success.
+  # States: across the blocks naming a screen, Loading, Error, Empty and Success; screen none names no screen.
   for (q = 1; q <= nscr; q++) {
     p = SCRN[q]; delete ST
     for (b = 1; b <= nb; b++) {

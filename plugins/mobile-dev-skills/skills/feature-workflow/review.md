@@ -7,7 +7,7 @@ The prompt gives you the project root, where your commands run and its paths sta
 ## Read first
 
 1. **The spec:** section 6 in full for the ids you were given, and the parts of sections 2–5 and 7 those blocks rely on (routes, screens, entities, state, design tokens and copy).
-2. **The standards:** each standards file the prompt names (every platform's, this platform's), and the project's `.mobile-dev-skills/standards.md` (the pre-rename `.flutter-skills/standards.md` in a project that has only that folder) at the project root whenever it exists, even if the prompt doesn't name it. A project rule wins over a bundled rule it names.
+2. **The standards:** each standards file the prompt names (every platform's, this platform's), and the project's `.mobile-dev-skills/standards.md` (the pre-rename `.flutter-skills/standards.md` in a project that has only that folder) at the project root whenever it exists, even if the prompt doesn't name it. A project rule wins over a bundled rule it names. When that file has a `## Workflow` part with a `Skills:` line, you may load those skills with the Skill tool, as reference while you check the conventions and the standards. They add no rule of their own: a finding still names a convention, a standard or a scenario, and where a skill's advice differs from a standard, the standard wins.
 3. **The run's files**, each in full. For an edited file that git tracks, `git diff -- <file>` shows the change. Read other code only as far as a check below needs it.
 
 ## Checks

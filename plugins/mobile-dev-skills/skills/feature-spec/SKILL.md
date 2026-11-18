@@ -13,7 +13,9 @@ When `feature-workflow` invoked this skill, use the adapter it loaded. This skil
 
 ## The output template
 
-Always use this exact structure. Name a new spec's file `<feature-slug>-feature-spec.md`, with the slug of its requirement ids (section 6's `id`), so that features don't share a file, unless the caller names another; an update keeps the file it changes.
+Always use this exact structure. Name a new spec's file `<feature-slug>-feature-spec.md`, with the slug of its requirement ids (section 6's `id`), so that features don't share a file, unless the caller names another or the project's existing specs share another naming (Handoff); an update keeps the file it changes.
+
+The one addition the structure allows is an unnumbered `## Appendix — <title>` after section 10, for material kept word for word for another team, such as an edge-case table a converted doc held (`${CLAUDE_SKILL_DIR}/conversion.md`).
 
 ```markdown
 # Feature: <Feature Name>
@@ -37,7 +39,7 @@ Always use this exact structure. Name a new spec's file `<feature-slug>-feature-
 - Where in the existing route tree this attaches (parent shell, guards, etc.)
 - Any new redirects or guards
 - Whether routes are typed or plain
-- Deep links: which routes open from outside the app (link, notification), the link shape, and what a missing target or a signed-out user sees
+- Deep links: <which routes open from outside the app (link, notification), the link shape, and what a missing target or a signed-out user sees; leave this line out when section 9 names deep links>
 
 ## 3. Affected existing screens
 For each affected screen:
@@ -72,7 +74,7 @@ For each endpoint:
 |---|---|---|---|---|
 | `ExampleScannerApi` | `scan()` | none → `ScannedCode?`, null when the user cancels | `cameraUnavailable` | ios, android |
 
-For each interface: its mechanism in the adapter's notation, anything the native side sends back later (events, callbacks), the thread or queue each method runs on, and how each error reaches the caller.
+For each interface: its mechanism in the adapter's notation, anything the native side sends back later (events, callbacks), the thread or queue each method runs on, and how each error reaches the caller. Leave this subsection out when section 9 names native code.
 
 ### Permissions & capabilities
 | Platform | Key | Usage string | Requested when |
@@ -80,7 +82,7 @@ For each interface: its mechanism in the adapter's notation, anything the native
 | ios | `NSCameraUsageDescription` | "Scan codes with the camera." | the user first taps Scan |
 | android | `android.permission.CAMERA` | — | the user first taps Scan |
 
-One row per platform and key, capabilities included (a background mode, an entitlement), with `—` where the system shows no usage string. What the user sees after a denial is a section 6 scenario.
+One row per platform and key, capabilities included (a background mode, an entitlement), with `—` where the system shows no usage string. What the user sees after a denial is a section 6 scenario. Leave this subsection out when section 9 names permissions.
 
 ## 5. State management
 
@@ -91,7 +93,7 @@ One row per platform and key, capabilities included (a background mode, an entit
 
 For each state primitive: what it exposes, what it depends on, its mutations or events, and its lifecycle / invalidation behavior.
 
-**Offline and resume:** what is cached and shown without a network, what refreshes when the app returns to the foreground, and what happens to work in flight.
+**Offline and resume:** <what is cached and shown without a network, what refreshes when the app returns to the foreground, and what happens to work in flight; leave this note out when section 9 names both offline and background / resume>
 
 ## 6. UI behavior per screen
 
@@ -161,8 +163,8 @@ The saved list SHALL never hold two entries with the same `articleId`.
 - New components: <list, with one-line description each>
 - Specific tokens: <spacing, color, typography callouts>
 - Motion / animation: <any specified>
-- Accessibility: <screen-reader labels, tap targets, text scaling — or the existing practice it follows>
-- Localization: <languages, where new strings go (e.g. ARB keys), date and number formats>
+- Accessibility: <screen-reader labels, tap targets, text scaling — or the existing practice it follows; leave this line out when section 9 names accessibility>
+- Localization: <languages, where new strings go (e.g. ARB keys), date and number formats; leave this line out when section 9 names localization>
 
 ## 8. Open questions / TBDs
 - [ ] <unresolved item, e.g. "`SavedArticle.savedAt` timezone">
@@ -197,17 +199,17 @@ Explicit list of things this spec does NOT cover, to prevent scope creep during 
 
 Section 6 consists only of blocks; a block may also hold a bug fix's change record ("Change records"). When a project's own spec layout replaces this template (`feature-workflow` Step 1.4), the blocks go in its screen-behavior section, or in a section added for them if it has none.
 
-- **Requirements.** One `### Requirement: <title>` per behavior; the title says what happens and when. Group them by screen, in the order the screens appear in sections 2 and 3. For an affected screen outside the feature (section 3), write only the behavior the change adds or alters. After the comments, one normative sentence states the behavior (SHALL, or its equivalent in the spec's language).
+- **Requirements.** One `### Requirement: <title>` per behavior; the title says what happens and when. Group them by screen, in the order the screens appear in sections 2 and 3, then the requirements with `screen: none`, before the invariants. For an affected screen outside the feature (section 3), write only the behavior the change adds or alters. After the comments, one normative sentence states the behavior (SHALL, or its equivalent in the spec's language).
 - **Comment keys**, directly under the heading, in this order:
   - `id` — `<feature-slug>.<n>`. The slug is the one the Intake Sheet was saved under (`.mobile-dev-skills/<feature-slug>/intake.md`), or else the feature name in lowercase ASCII kebab-case (for a non-Latin name, an English rendering that matches the spec file's name when it has one). It stays fixed for the life of the spec, even if the feature is renamed. A new block takes the highest `n` in the file plus one, counting any block the same edit removes. Ids are never renumbered: rewording or renaming a requirement keeps its id, and a deleted block's gap stays.
-  - `screen` — the screen class from section 2 or 3, or several, comma-separated.
+  - `screen` — the screen class from section 2 or 3, or several, comma-separated; `none` for a requirement with no screen of its own (a background task, a notification, a service).
   - `entities` — the section 4 entities involved, or `none`.
   - `enforced` — `(filled in Phase 2)`, or, for behavior already in the code, `<path>#<Symbol>`: the project-relative file plus the class, method (`Class.method`) or provider that carries it. Comma-separate several; never a line number, or a name that exists only in generated code.
 - **Scenarios.** `#### Scenario: <title>` blocks under a requirement. Each one, unless it is `N/A` (below), starts with its `test` comment (after its `platform` comment, when it has one), `<!-- test: (filled in Phase 2) -->`, `<!-- test: manual — <reason> -->` or, for a test the user skipped, `<!-- test: none — <reason> -->` (in a baseline, below, or a conversion from the bullet format, an existing test or `none`), then `- **WHEN** <trigger>` and `- **THEN** <result>` lines, optionally `- **GIVEN** <precondition>` before WHEN and `- **AND** <further result>` after THEN. Each line states one observable fact.
-- **Four states per screen.** Across its requirements, every new or modified screen has scenarios titled `Loading`, `Error`, `Empty` and `Success`; a variant adds a qualifier, as in `Error — session expired`. A state that can't occur, or that a modified screen's change doesn't touch, gets the body `N/A — <reason>` in place of WHEN/THEN and no `test` comment; several such states may share one scenario whose title lists them, as in `#### Scenario: Loading, Empty`.
+- **Four states per screen.** Across its requirements, every new or modified screen has scenarios titled `Loading`, `Error`, `Empty` and `Success`; a variant adds a qualifier, as in `Error — session expired`. A state that can't occur, or that a modified screen's change doesn't touch, gets the body `N/A — <reason>` in place of WHEN/THEN and no `test` comment; several such states may share one scenario whose title lists them, as in `#### Scenario: Loading, Empty`. A requirement with `screen: none` has no screen, so no states to give.
 - **Per-platform behavior.** A scenario that holds on some platforms only carries `<!-- platform: <id> -->` directly under its heading, with the ids of the adapter's "Spec notation" (comma-separated for several); an `N/A` scenario may carry one too. A scenario without it holds on every platform. When a state or action differs per platform, give each platform its own scenario, its title qualified to tell them apart, as in `#### Scenario: Error — permission denied (iOS)`.
 - **Actions, navigation and side effects are scenarios too.** Each user action (tap, gesture, pull-to-refresh, pagination) has its result in a THEN/AND line, either in a scenario of its own or in the scenario it belongs to, like a retry button in `Error`. THEN/AND lines also name the route an action opens (from section 2) and any analytics event, snackbar or dialog.
-- **Invariants.** Always-true rules from the Intake Sheet's Binding logic (limits, ordering, consistency across screens) become `### Invariant: <title>` blocks after the screen requirements. They carry `id`, `entities` and `enforced` (plus `screen` when screen-bound) and a SHALL sentence. Scenarios are optional, but tests anchor to scenarios, so a rule a test can exercise gets one.
+- **Invariants.** Always-true rules from the Intake Sheet's Binding logic (limits, ordering, consistency across screens) become `### Invariant: <title>` blocks after the requirements. They carry `id`, `entities` and `enforced` (plus `screen` when screen-bound) and a SHALL sentence. Scenarios are optional, but tests anchor to scenarios, so a rule a test can exercise gets one. An invariant is a rule that always holds; behavior with a trigger (an event, a schedule, a background wake) is a requirement, with `screen: none` when no screen shows it.
 - **Tests.** Phase 2 writes an automated test for every scenario that isn't `N/A` or `manual`, of the kind section 10's Test plan gives its layer. Mark a scenario `manual` only when no test in this project can reach it (the system permission dialog itself, though not what the app does with its answer; a push arriving; how something looks on a real device), and give the reason. The user approves each one with the spec.
 - **Skipped tests.** When delivery matters more, the user may skip a scenario's test, before approval or during Phase 2: its `test` becomes `none — <reason>`, the reason in the user's words. It blocks no run, and a later missing-tests request (`feature-workflow`) can add the test. Until then it is a `no test` finding, so `feature-verify` leaves `Last verified` undated.
 - **`TBD` and `PROVISIONAL`** keep their meaning inside WHEN/THEN text. Each TBD also gets its section 8 checkbox naming the id and scenario.
@@ -219,7 +221,7 @@ Section 6 consists only of blocks; a block may also hold a bug fix's change reco
 The `### Test plan` subsection says how this feature is tested in this project, layer by layer. It doesn't list tests: section 6 already holds one `test` comment per scenario.
 
 - **Source.** The Detected Stack's `Test packages` line and the test conventions (`.mobile-dev-skills/stack.md`, or the pre-rename `.flutter-skills/stack.md` in a project that has only that folder, or the conversation). Without them, read the manifest's dev dependencies and one existing test. A project with no tests to mirror gets the adapter's fallback test stack ("Stack layer"; for Flutter, `flutter_test` with hand-written fakes), stated as a default.
-- **Lines.** One per test kind the adapter's "Spec notation" lists (for Flutter: Unit, Widget, Golden, Integration), then Manual. A kind the project doesn't use, or the feature doesn't need, says `N/A — <reason>`.
+- **Lines.** One per test kind the adapter's "Spec notation" lists (for Flutter: Unit, Widget, Golden, Integration), then Manual. A kind the project doesn't use, or the feature doesn't need, says `N/A — <reason>`; a kind the adapter lists only under a condition is left out while the condition doesn't hold.
 - **A project's own layout** (`feature-workflow` Step 1.4): put the plan in its testing section, or at the end of its implementation section.
 
 ## Non-functional topics
@@ -249,11 +251,12 @@ Run it on the saved spec file, not from memory of writing it: in this skill's Ha
 
 **The script decides checks 1 and 6.** Run `bash ${CLAUDE_SKILL_DIR}/scripts/check_spec.sh --adapter <the adapter's PLATFORM.md> <spec path>` first, adding `--own-layout` when the spec follows a project's own layout (`feature-workflow` Step 1.4). Reading the spec never stands in for running it.
 - Each `FINDING=<check> <line> <message>` line is a finding: `states` of check 1; `syntax`, `items` and `layout` of check 6. What the script passes is no finding of either.
+- A `layout` finding that names section 9 is check 5's double answer: a topic section 9 names as not affected that still has its template part. The script finds it only in the template layout and only for English topic names on a `- Not affected:` line, so check 5 stays yours.
 - It checks the whole file. In an update, a `states` finding on a screen the change doesn't touch is older: name it in your reply and leave that screen alone; it isn't new on later runs.
 - The last line, `RESULT=pass|fail findings=<n> blocks=<n> scenarios=<n> open=<n>`, goes in your reply whole. `open` counts the unticked section 8 items not marked `— deliberately deferred` or `— declined` (`feature-workflow` Step 1.6), outside a `### Provisional shapes` list.
 - Exit 4 is a usage error, never a result: fix the call and run it again.
 
-1. **States.** Every new or modified screen has `Loading`, `Error`, `Empty` and `Success` scenarios, or `N/A — <reason>`.
+1. **States.** Every new or modified screen has `Loading`, `Error`, `Empty` and `Success` scenarios, or `N/A — <reason>`. A requirement with `screen: none` has none to check.
 2. **Endpoint errors.** Every request the feature makes has a scenario for its failure (a screen's `Error` scenario covers the request that loads it), and every error case that section 4 says the UI must handle distinctly has its own.
 3. **Action results.** Every user action (tap, gesture, pull-to-refresh, pagination, submit) has a THEN/AND result.
 4. **No vague words.** No untestable qualifier (fast, smooth, nice, user-friendly, intuitive, properly, as usual, or its equivalent in the spec's language) stands where a value, a widget, copy or a named existing behavior belongs. Quoted user wording is exempt.
@@ -266,9 +269,10 @@ A section 6 kept in the bullet format (`SECTION6=bullets`): the script checks on
 Handle each finding as follows:
 - **Fix in place:**
   - a check 6 finding (the script's `syntax`, `items` and `layout`);
+  - check 5's double answer: leave out the template part, or, when that part states something the feature does, take the topic out of section 9;
   - a slip that the Intake Sheet or the user's own words already answer;
   - a topic that clearly doesn't apply, named in section 9 with a reason the spec itself shows (e.g. "no new routes").
-- **Everything else becomes a TBD for the loop.** A missing state, failure or action result becomes its scenario or THEN/AND line with `TBD` in it, under a new requirement whose statement is `TBD` if the screen has none. Each of these findings gets a section 8 checkbox, naming the id and scenario when it is in section 6. Never resolve a finding by guessing.
+- **Everything else becomes a TBD for the loop.** A missing state, failure or action result becomes its scenario or THEN/AND line with `TBD` in it, under a new requirement whose statement is `TBD` if the screen has none. Each of these findings gets a section 8 checkbox, naming the id and scenario when it is in section 6. Never resolve a finding by guessing. Copying another scenario's behavior or copy is a guess too: when a sibling scenario suggests the answer, the section 8 item offers it as a proposal the user can confirm in one word, e.g. `` `<id> Error — refresh fails`: the same snackbar as `<id> Error`? ``.
 - **Not new:** a finding already in section 8, whether open, deliberately deferred or marked declined by the user.
 
 Report the result in your reply, never in the spec:
@@ -295,7 +299,7 @@ If the feature is genuinely small (e.g. "add a toggle to settings that calls one
 - **Edit blocks in place.** Changed behavior stays in its block, under the same id. New behavior takes the next id. Removed behavior loses its block; the other ids stay as they are. A state scenario that is cut becomes `N/A — out of scope`. Anchors already filled stay as they are; Phase 2 updates them.
 - **No `### Test plan` yet** (a spec from before tests were planned): add it with the first change that adds or alters a scenario.
 - **No section 4 native interfaces or permissions subsection yet** (a spec from before they existed): add one with the first change that needs it, and move into it any permission the spec states elsewhere, such as a section 10 declaration step. Don't add either for a change that needs neither.
-- **Section 6 from before the block format** (a bullet list per screen): before applying the change, ask once whether to convert it to blocks, and recommend converting. The conversion is a reformat: every bullet becomes a requirement or scenario, nothing is added or dropped, and the user sees it as its own change before the delta goes in. It numbers blocks from 1 and adds `> Last verified: never (implemented, not yet verified)` under the H1, or `never (not implemented)` if the feature isn't built yet. Point `enforced` at the existing code where you know it, otherwise `(filled in Phase 2)`. A scenario's `test` is an existing test whose body checks it, by its own description, as in a baseline (so that the adapter's **Test-name search** finds it); otherwise `none` for behavior the app already has, `(filled in Phase 2)` for behavior not built yet. If the user declines, edit in the bullet format.
+- **Section 6 from before the block format** (a bullet list per screen): before applying the change, ask once whether to convert it to blocks, and recommend converting. The conversion is a reformat that changes no behavior, and the user sees it as its own change before the delta goes in. When the user agrees, read `${CLAUDE_SKILL_DIR}/conversion.md` and convert by it, the layout first when the spec's sections aren't the ten. If the user declines, edit in the bullet format.
 - **A bug fix** (`feature-workflow`) corrects the scenario the bug shows to be vague or wrong, in its block under the same id, or adds one for a case no scenario covered, under its requirement or a new one with the next id. When a scenario already states the right behavior, its text stays as it is. Either way it adds its change record (below).
 - **A refactor** (`feature-workflow`) changes only the sections that describe the code it moves (section 4's repository or native interfaces, section 5's state primitives, section 2's routing wiring, and section 10's Test plan where its pin tests make it untrue) and nothing in section 6, then adds its change record.
 
@@ -342,6 +346,12 @@ If the user has told you the backend isn't built yet and they want to proceed wi
    ```
 5. **Never mix provisional and confirmed entities silently.** Every provisional thing must be visually marked so a reviewer scanning the spec sees it immediately.
 
+**A new field on an endpoint that exists**, which the backend doesn't accept or return yet, is marked on its own:
+- The endpoint keeps its real path in the API endpoints table, without `PROVISIONAL`, and the entity's heading gets no prefix.
+- The field is marked `PROVISIONAL` in its entity's sketch and in the request or response shape, and one line under that entity names its provisional fields and their source.
+- The field goes in section 8's `### Provisional shapes` list.
+- The repository stays the real one, with no stub. What it sends until the backend accepts the field (the field left out, or sent anyway) is the user's answer, or a section 8 TBD.
+
 This distinction matters: a TBD blocks progress until resolved. A provisional shape unblocks UI work today but creates a debt that must be paid before launch. Both need to be tracked, but differently.
 
 ## API contract from another part
@@ -355,7 +365,7 @@ In a monorepo, the app's requests may come from another part's spec, such as the
 ## Handoff
 
 After producing the spec:
-1. Save it in the folder the caller names, or else in the project root, the adapter's Root, which in a monorepo is the app's folder, not the working directory (or present it to the user if no filesystem). If the Intake Sheet was saved as `.mobile-dev-skills/<feature-slug>/intake.md` (or under the pre-rename `.flutter-skills/`, in a project that has only that folder), add `> Spec: <spec path>` as its first line.
+1. Save it in the folder the caller names. Without one, use the spec index's folder, found with `grep -rlxF --include='*index.md' '| Feature | Spec | Screens and routes | Status | Last verified |' .` at the project root; else the folder of the project's existing specs; else the project root. The project root is the adapter's Root, which in a monorepo is the app's folder, not the working directory (present the spec to the user if there is no filesystem). Unless the caller names the file, follow the existing specs' file naming when they share one, with the feature slug in it. Only `feature-workflow` adds index rows: when the folder has a spec index and that skill didn't invoke this one, say that the new spec has no row yet and that `feature-workflow` adds it the next time it reads the spec. If the Intake Sheet was saved as `.mobile-dev-skills/<feature-slug>/intake.md` (or under the pre-rename `.flutter-skills/`, in a project that has only that folder), add `> Spec: <spec path>` as its first line.
 2. Run the quality check (above), its script first, and report its result. After in-place fixes, run the script again before step 3.
 3. Show the user the **Open Questions** section explicitly: "Here are the TBDs that need resolving before code: ..." Name any scenario marked `test: manual` too, since approval accepts it as checked by hand, and any whose test the user skipped (`test: none — <reason>`).
 4. Ask: "Approve this spec? Once you approve, I'll move to scaffolding the code." If the spec changes before approval, run the quality check again before asking again.

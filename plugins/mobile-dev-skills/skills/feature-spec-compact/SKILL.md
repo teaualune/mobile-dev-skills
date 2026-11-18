@@ -28,7 +28,7 @@ Scan the whole file, not just the obvious sections. Look for (non-exhaustive):
 
 Specs produced by `feature-spec` and then revised over several rounds — especially via the orchestrator's existing-feature-edit mode — typically contain several of these at once.
 
-Not change records, even when they hold a date: the `> Last verified:` line under the H1, the section 6 block comments (`id`, `screen`, `entities`, `enforced`, `test`). Keep them.
+Not change records, even when they hold a date: the `> Last verified:` line under the H1, the section 6 block comments (`id`, `screen`, `entities`, `enforced`, `test`), and an unnumbered `## Appendix — <title>` after section 10, which holds material kept word for word for another team (`feature-spec`'s "The output template"). Keep them.
 
 ## Process
 

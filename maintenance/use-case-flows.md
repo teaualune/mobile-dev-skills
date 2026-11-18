@@ -81,7 +81,7 @@ flowchart TD
   L8{"Spec section 4 lists native interfaces, permissions or capabilities?"}:::decision
   L9["Read Native interop: the native platforms it lists"]:::step
   L10{"Who covers each native platform's files?"}:::decision
-  L11["Another adapter says Native adapter for it, SwiftUI for ios, Compose for android: add its Standards and Agents for those files only"]:::step
+  L11["Another adapter says Native adapter for it, SwiftUI for ios, Compose for android: add its Standards and Agents for those files only, and its test commands for native unit tests"]:::step
   L12["The app's own platform, in a SwiftUI or Compose app: the adapter's own standards and agents"]:::step
   L14["No adapter claims it: the project's own native files and the common standards, no native review or fixer"]:::step
   L13("Adapter ready"):::done
@@ -108,7 +108,7 @@ flowchart TD
 
 - Sections read: `feature-workflow` and `feature-scaffold` in full except "Native interop", and a scaffold chunk only "Project layout", "Commands", "Generation order" and "Templates"; `feature-spec` "Stack layer" and "Spec notation", plus the **Test-name search** line of "Commands" for anchors to existing tests; `feature-verify` and a trivial request "Project layout" and "Commands"; `mobile-build-deploy` "Project layout" and "Build adapter", plus "Commands" when "Build adapter" sends it there; the baseline subagent "Project layout", "Code entry points", "Spec notation" and the Test-name search, the diagnosis "Project layout", "Code entry points" and "Commands" (each skill's own "Platform adapter" paragraph; `baseline.md` and `diagnose.md` "Read first").
 - The SwiftUI and Compose adapters' "Applies when" exclude a Flutter or React Native project's `ios/` and `android/` folders (Compose also a Kotlin Multiplatform project), so in a Flutter project each is reached only through `Native adapter for:`, as the native adapter of `ios` or `android` (swiftui and compose `PLATFORM.md` "Applies when", "Native interop").
-- In a Flutter project's native folders only a native adapter's rules for every Swift file or every Kotlin file apply, and nothing else of that adapter is read (`feature-workflow` and `feature-scaffold` "Native adapters"; swiftui and compose `standards.md`).
+- In a Flutter project's native folders only a native adapter's rules for every Swift file or every Kotlin file apply, its test rules to native unit tests, and its "Commands" run those tests; nothing else of that adapter is read (`feature-workflow` and `feature-scaffold` "Native adapters"; swiftui and compose `standards.md`).
 
 ### SF-2 — Saved stack and command decision
 
@@ -281,7 +281,7 @@ flowchart TD
   A15[["feature-scaffold Step 1"]]:::skill
   A16{"Conventions saved under a matching fingerprint?"}:::decision
   A17(["User confirms the Detected Stack and Conventions Report"]):::user
-  A18["feature-scaffold Step 2: load the standards files"]:::step
+  A18["feature-scaffold Step 2: load the standards files, then the project's Skills line"]:::step
   A19[("tasks.md, then its Baseline and Standards lines")]:::state
   A20["Step 2.2 baseline on untouched code: Analyze, Tests, Format, Native build"]:::step
   A21["Generate in the adapter's Generation order, each layer's tests after it"]:::step
@@ -295,6 +295,7 @@ flowchart TD
   A29("Done: scaffold's closing notes"):::done
   A30[["figma-design-to-artifact, sibling plugin, offered as in UC-18"]]:::skill
   A31["Native code, permissions, capabilities - UC-14"]:::step
+  A32(["User's go-ahead after each ticked task: its files and test results shown"]):::user
   A0 --> A1
   A1 -->|yes| A2
   A1 -->|no| A3
@@ -320,6 +321,8 @@ flowchart TD
   A20 --> A21
   A21 -.->|chunks| A22
   A21 -.->|section 4 native work| A31
+  A21 -.->|project file says Pause after each task, or asked this run| A32
+  A32 --> A21
   A21 --> A23
   A23 -->|yes| A24
   A24 --> A21
@@ -333,6 +336,7 @@ flowchart TD
 - Invoked as Step 1.3, `feature-intake` returns the finished sheet to the orchestrator instead of handing it to `feature-spec`, since Step 1.4 comes before the spec (`feature-intake` "When intake is done"; `feature-workflow` "Step 1.3").
 - Without a project docs convention the spec takes `feature-spec`'s default name, `<feature-slug>-feature-spec.md`, so features don't share a file (`feature-workflow` "Step 1.4"; `feature-spec` "The output template").
 - Implementation subagents report files and anchors; only the orchestrator writes the spec and ticks `tasks.md` (`feature-workflow` "Step 2.2", Delegation bullet).
+- The project's `.mobile-dev-skills/standards.md` may have a `## Workflow` part: its `Skills:` line is loaded by the scaffold's Step 2, the implementation subagents and the trivial path, and named on the `Standards:` line; `Pause after each task: yes` stops Step 2.2 after each ticked task, never the Spec anchors task or Steps 2.3 and 2.4 (`feature-scaffold` "Step 2"; `feature-workflow` "Step 2.2").
 - The index row goes `draft` → `approved` → `implemented`, and `implemented` waits for both the verification run and the review (`feature-workflow` "Spec index").
 - Some adapters need a test setup before Phase 2's first test: a SwiftUI app without a unit-test target gets one that the user adds in Xcode, and a Compose module without Robolectric and the Compose test libraries gets them as a new dependency the user approves, or, declined, its screen scenarios are tested on the ViewModel (swiftui and compose `PLATFORM.md` "Project layout").
 - A new file joins its target with no project edit, except in a group-based Xcode project, where the user first chooses between adding it in Xcode and a project-file edit (swiftui `PLATFORM.md` "Project layout", File registration).
@@ -359,7 +363,7 @@ flowchart TD
   T4{"Needs state, data, a request, a route or an action?"}:::decision
   T5["Move up to Small with what is gathered - UC-3"]:::step
   T6["2 Settle the command, reuse or add a Command line in an existing stack.md"]:::step
-  T7["3 Read the standards files"]:::step
+  T7["3 Read the standards files, load the project's Skills line"]:::step
   T8{"4 Spec states what changes?"}:::decision
   T9["Plan edits that spec text in its own format, ids and anchors kept"]:::step
   T10{"A value missing, like the new copy?"}:::decision
@@ -586,6 +590,7 @@ flowchart TD
 - A change approved while tasks are still unticked adds its tasks to the same file and unticks Spec anchors, Verification and Review (`feature-workflow` "Step 2.2").
 - In an edit, a listed scenario whose test this run didn't write or edit is a Conformance finding, since its old test passing says nothing about the change (`feature-workflow` "Step 2.3", Conformance).
 - Keeping bullets leaves nothing to anchor: `feature-verify` stops on such a spec and the run's Conformance is skipped (`feature-spec` "When updating an existing spec"; `feature-verify` "Inputs").
+- A conversion follows `feature-spec`'s `conversion.md`: the layout brought to the ten sections first, each kind of non-bullet text in its place, and nothing added but what the checker needs and the anchors. A project's freeform feature doc is offered the same conversion at Step 1.4; docs that share a layout of their own keep it (`feature-workflow` "Step 1.4").
 
 ### UC-6 — Edit to a never-specced feature: baseline spec
 
@@ -1259,8 +1264,8 @@ flowchart TD
   H0["Approved Flutter spec, section 4 lists native interfaces, permissions or capabilities"]:::step
   H1["Read the Flutter adapter's Native interop, grep the adapters for Native adapter for"]:::step
   H2{"Native platform"}:::decision
-  H3["ios: the SwiftUI adapter is its native adapter, adds its rules for every Swift file and its agents"]:::step
-  H4["android: the Compose adapter is its native adapter, adds its rules for every Kotlin file and its agents"]:::step
+  H3["ios: the SwiftUI adapter is its native adapter, adds its rules for every Swift file, its agents, and its test rules and commands for native unit tests in RunnerTests"]:::step
+  H4["android: the Compose adapter is its native adapter, adds its rules for every Kotlin file, its agents, and its test rules and commands for native unit tests in android/app/src/test"]:::step
   H20(["macos, web, windows or linux folder: not covered, ask before writing native code there"]):::user
   H5[("tasks.md names native and declaration files per platform, the Standards line each native adapter's file")]:::state
   H6["Step 2.2 baseline: Native build per platform folder the tasks name"]:::step
@@ -1312,6 +1317,7 @@ flowchart TD
 
 - Each new iOS usage key also goes into `REQUIRED_USAGE_KEYS` of the project's `scripts/build-version.sh`, which `mobile-build-deploy` checks before every iOS build (flutter `PLATFORM.md` "Native interop", Declarations; UC-23).
 - A platform the machine can't build becomes a manual check (`ios/` builds only where `xcodebuild -version` succeeds); with neither left, Native build is `SKIPPED` (flutter `PLATFORM.md` "Commands").
+- Native logic that must run without the Flutter engine gets native unit tests (the Test plan's `Native unit` line), run in the Tests check and by `feature-verify` with the native adapter's commands; a platform whose native command rule stops on this machine goes on the manual checks, and `feature-verify` lists its anchored tests on its `Not run:` line, which leaves `Last verified` undated (flutter `PLATFORM.md` "Commands", "Native interop"; `feature-verify` step 4).
 - In `ios/` and `android/`, the native reviewers judge channel and plugin code by their language, concurrency, platform and security items; SwiftUI view patterns, and Compose's architecture and Compose items, don't apply. Generated Pigeon output, Objective-C and Java files are out of their scope (`swift-reviewer`, `kotlin-reviewer` "Inputs from feature-workflow").
 - A Native pass gets only the files in its adapter's language, the Swift or Kotlin files its `Native adapter for:` line names; native files in another language follow the project's own native files and the common standards, with no native review, and Step 2.4 records `NOT RUN — no reviewer for <language> files` (`feature-workflow` "Native adapters", "Step 2.4").
 - A folder with no native adapter gets neither a native pass nor a native build fixer (`feature-workflow` "Native adapters").
@@ -2227,7 +2233,7 @@ flowchart TD
   MG14["A feature with no spec: baseline spec - UC-6"]:::step
   MG15["Build: v0.2.0 build-version.sh checked against Older scripts - UC-23"]:::step
   MG16["Deploy: .flutter-store-deploy still read, rename offered - UC-24"]:::step
-  MG17["By hand, sooner: convert section 6 as MIGRATION.md section 3 says, then feature-verify - UC-21"]:::step
+  MG17["By hand, sooner: convert as MIGRATION.md section 3 and feature-spec's conversion.md say, then the spec checker and feature-verify - UC-21"]:::step
   MG18(["Stay on v0.2.0 until a stable release?"]):::user
   MG19("Marketplace removed and added again at the v0.2.0 tag, flutter-skills reinstalled; project scope commits the pinned settings"):::done
   MG0 --> MG18

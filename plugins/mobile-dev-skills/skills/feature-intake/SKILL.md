@@ -115,7 +115,7 @@ Then go on with the matching section below.
 - **Don't invent — with one exception.** If the user says "the API returns user data" without specifying fields, ask. Never guess `{id, name, email}` and move on. **Exception:** if the user explicitly tells you the backend API isn't ready yet but the UI work needs to proceed, you may propose a provisional entity shape. Treat this as a collaborative sketch, not a unilateral decision:
   1. Propose the shape with brief reasoning ("Based on the screen needing a title, body, and timestamp, I'd suggest `Article { id, title, body, publishedAt }` — does that match what you expect from the backend?").
   2. Ask the user to sanity-check it before treating it as decided.
-  3. Mark the entity in the Intake Sheet as `PROVISIONAL` so the spec and scaffold steps know to add TODO comments and use a stub repository.
+  3. Mark the entity in the Intake Sheet as `PROVISIONAL`, or, for a new field on an existing entity, only that field, so the spec and scaffold steps know to add TODO comments and, for an endpoint that doesn't exist yet, use a stub repository.
   4. Add the provisional shape to a tracked list of "things to confirm with backend later".
 
   Shapes taken from another part's spec that isn't approved yet (a delegation brief's `draft` API contract) are `PROVISIONAL` the same way, copied from that spec rather than proposed.

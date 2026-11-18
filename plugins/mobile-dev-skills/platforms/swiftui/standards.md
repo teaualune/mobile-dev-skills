@@ -1,6 +1,6 @@
 # Standards — SwiftUI
 
-Swift and SwiftUI rules, on top of the common `../standards.md`. They apply to all hand-written Swift code, on top of the detected conventions. In a Flutter project, where this adapter is the native adapter for `ios/`, only the rules under "Every Swift file" apply, to the Swift files a run writes there; that project's scenario tests follow its own adapter, and Objective-C files are out of scope.
+Swift and SwiftUI rules, on top of the common `../standards.md`. They apply to all hand-written Swift code, on top of the detected conventions. In a Flutter project, where this adapter is the native adapter for `ios/`, only the rules under "Every Swift file" apply, to the Swift files a run writes there, and **Form**, **Unescaped titles**, **Fakes**, **Persistence** and **Host tests** to its native unit tests (the Flutter adapter's "Native interop"), so their descriptions are `@Test("<id> <Scenario title>")` strings this adapter's test-name search finds. That project's other scenario tests follow its own adapter, and Objective-C files are out of scope.
 
 ## Code
 
@@ -23,9 +23,11 @@ Every Swift file:
 In a SwiftUI app:
 
 - **View models on the main actor.** Each view model or store class is `@MainActor` (implied where the target's default isolation is `MainActor`), and `@Observable` from iOS 17 unless the project's view models are `ObservableObject`.
-- **Load in `.task`**, not in `onAppear` with a `Task {}`: `.task` is cancelled when the view goes away. Pull to refresh goes through `.refreshable`, calling the same async load.
+- **Load in `.task`**, not in `onAppear` with a `Task {}`: `.task` is cancelled when the view goes away. Pull to refresh goes through `.refreshable`, calling the same async load. With TCA:
+  - screen-scoped work starts from `.task { await store.send(.task).finish() }`, so its effect ends with the view;
+  - an effect that must keep running while another screen is pushed on top, such as a subscription to app-wide events, never starts from `.task`, which is cancelled when the view disappears. It starts from an action the view sends in `onAppear`, its effect is `.cancellable(id:cancelInFlight: true)` so a second appearance restarts it rather than adding a second one, and it lives with the store: TCA cancels a child feature's effects when its state leaves the navigation stack or its presentation.
 - **Unbounded lists in `List` or a `LazyVStack`**, never a `VStack` inside a `ScrollView`.
-- **Strings in the String Catalog.** When the project has a `Localizable.xcstrings`, each new user-visible string is a key there with a value in every language the catalog holds: `Text("key")` for a `LocalizedStringKey`, `String(localized: "key")` where a `String` is needed. With `.strings` files, the key goes into each `.lproj`.
+- **Strings in the String Catalog.** When the project has a `Localizable.xcstrings`, each new user-visible string is a key there with a value in every language the catalog holds. Write keys the way the convention probes found them: `Text("key")` for a `LocalizedStringKey` and `String(localized: "key")` where a `String` is needed; the symbols Xcode 26 generates from the catalog, `Text(.keyName)` and `String(localized: .keyName)`; or SwiftGen's `L10n`. With `.strings` files, the key goes into each `.lproj`.
 - **A provisional stub's delay** is `try await Task.sleep(for: .milliseconds(400))` (below iOS 16, `try await Task.sleep(nanoseconds: 400_000_000)`).
 - **The stub's file** is named after its type, `StubExampleRepository.swift`, next to `ExampleRepository.swift`.
 - **Shipped models migrate.** A change to a persisted model that has shipped adds a schema version and a migration stage (SwiftData: a new `VersionedSchema` in the `SchemaMigrationPlan`), never an edit of the shipped schema in place.

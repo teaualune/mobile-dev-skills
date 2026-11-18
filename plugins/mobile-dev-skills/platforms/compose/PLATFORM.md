@@ -166,7 +166,7 @@ KSP, kapt and the other generators run inside the compile, so Codegen has no com
 
 **Tests** run with `--rerun`, so a task Gradle thinks is up to date still runs. The console names each failing test as `<Class> > <name> FAILED`, with the class's simple name; the passing ones are only in the reports the anchored-test reader below reads.
 
-**Native build** is `none`: this is a native app, and Analyze already compiles everything a run touches. In a Flutter project, the Flutter adapter's Native build compiles the `android/` folder, and this adapter adds only its standards and agents there ("Native interop").
+**Native build** is `none`: this is a native app, and Analyze already compiles everything a run touches. In a Flutter project, the Flutter adapter's Native build compiles the `android/` folder, and this adapter adds only its standards, its agents and its test commands there ("Native interop").
 
 ### Other commands
 
@@ -242,7 +242,7 @@ How a Compose spec fills the platform-dependent parts of the `feature-spec` temp
 
 ## Standards
 
-`standards.md` in this folder: the Kotlin, Compose and Android rules, on top of the common `../standards.md`. In a Flutter project's `android/` folder only its rules for every Kotlin file apply ("Native interop").
+`standards.md` in this folder: the Kotlin, Compose and Android rules, on top of the common `../standards.md`. In a Flutter project's `android/` folder only its rules for every Kotlin file apply, and the test rules it names for native unit tests ("Native interop").
 
 ## Templates
 
@@ -270,7 +270,7 @@ Other stacks (Koin, Voyager, Ktor, Gson, Compose state in the ViewModel, Views, 
 What a Compose feature needs from Android itself, and what this adapter adds to another framework's Android folder.
 
 - **Platforms:** `android`, the app's own module, in Kotlin.
-- **Native adapter for:** `android`. In a Flutter project, this adapter's "Standards" and "Agents" also apply to the Kotlin files a run writes in the `android/` folder; nothing else of it applies there, since the Flutter adapter's "Native interop" says where that code goes and its Native build compiles it.
+- **Native adapter for:** `android`. In a Flutter project, this adapter's "Standards" and "Agents" also apply to the Kotlin files a run writes in the `android/` folder, and its "Commands" run the native unit tests there: its command rule, on the Gradle root, module and variant the Flutter adapter's "Native interop" names, and its commands for a layer's tests, the Tests check, the test-name search and the anchored tests. Nothing else of it applies there, since the Flutter adapter's "Native interop" says where that code goes and its Native build compiles it.
 - **Mechanism:** the one the spec names, ranked in "Spec notation": an Android API behind a Kotlin interface, with no bridge between languages.
 - **Native code** goes where the project keeps its services (a `data/` or `platform/` package, or the feature's package), mirroring the existing ones, and is bound in DI the way the repositories are; the ViewModel gets the interface through its constructor. A runtime permission request needs an activity, so the composable launches it (`rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission())`) and passes the result to the ViewModel. Native code does only what section 4 states: a method whose behavior the spec doesn't give is a gap to ask about, never a stub.
 - **Declarations**, one per section 4 permission or capability row:
