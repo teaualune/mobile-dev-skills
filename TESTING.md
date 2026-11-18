@@ -175,7 +175,7 @@ The plugin leaves alpha when every `synthetic` case has passed, A1, A2 and K1 (t
 | I4 | Android with an old `android.json` in `.flutter-store-deploy/` | Phase select reads the legacy folder; the rename offered | use | open |
 | I5 | A real archive of a CocoaPods workspace Flutter app | The workspace used; the archive checked | use | open |
 | I6 | The old-script decline paths | Declined with a matching fvm pick, the script runs as it is; with a mismatch, the skill stops before `pubspec.yaml` changes | synthetic | open |
-| I7 | Installs from the public GitHub marketplace | A v0.2.0 install follows the guide; a fresh install of the current version; the `#v0.2.0` pin installs v0.2.0 | use | owner |
+| I7 | Installs from the public GitHub marketplace | A v0.2.0 install follows the guide; a fresh install of the current version; the `#v0.2.0` pin installs v0.2.0 | use | passed — 2026-11-18, 0.1.0-alpha.1, isolated `HOME`, no model cost: a fresh install (eight skills, only the plugin folder cached); the `#v0.2.0` pin, which stayed on the tag after `main` moved and a `marketplace update`; a v0.2.0 project install that failed to load after a refresh ("Plugin flutter-skills not found in marketplace flutter-skills") and was replaced by the guide's project-scope commands |
 | I8 | `mobile-build-deploy` for Android with and without `bundletool`, and with a stale AAB | With it: package, `versionName` and `versionCode` read and compared; without: the file's time checked and the summary says the version wasn't read; a stale AAB stops before deploying | synthetic | open |
 
 ### J. Maintainer
