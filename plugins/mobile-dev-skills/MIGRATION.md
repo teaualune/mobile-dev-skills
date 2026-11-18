@@ -28,7 +28,7 @@ The version starts again with the new name, at `0.1.0-alpha.1`: a newer release 
   ```
   /plugin uninstall flutter-skills@flutter-skills
   /plugin marketplace remove flutter-skills
-  /plugin marketplace add teaualune/flutter-feature-skills
+  /plugin marketplace add teaualune/mobile-dev-skills
   /plugin install mobile-dev-skills@mobile-dev-skills
   ```
 
@@ -38,7 +38,7 @@ The version starts again with the new name, at `0.1.0-alpha.1`: a newer release 
   ```
   claude plugin uninstall flutter-skills@flutter-skills --scope project
   claude plugin marketplace remove flutter-skills
-  claude plugin marketplace add teaualune/flutter-feature-skills --scope project
+  claude plugin marketplace add teaualune/mobile-dev-skills --scope project
   claude plugin install mobile-dev-skills@mobile-dev-skills --scope project
   ```
 
@@ -48,7 +48,7 @@ The version starts again with the new name, at `0.1.0-alpha.1`: a newer release 
 
   ```
   /plugin marketplace remove flutter-skills
-  /plugin marketplace add teaualune/flutter-feature-skills#v0.2.0
+  /plugin marketplace add teaualune/mobile-dev-skills#v0.2.0
   /plugin install flutter-skills@flutter-skills
   ```
 
@@ -56,7 +56,7 @@ The version starts again with the new name, at `0.1.0-alpha.1`: a newer release 
 
   ```
   claude plugin marketplace remove flutter-skills
-  claude plugin marketplace add teaualune/flutter-feature-skills#v0.2.0 --scope project
+  claude plugin marketplace add teaualune/mobile-dev-skills#v0.2.0 --scope project
   claude plugin install flutter-skills@flutter-skills --scope project
   ```
 

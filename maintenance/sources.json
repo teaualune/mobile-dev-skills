@@ -24,7 +24,7 @@
     {"prefix": "https://raw.githubusercontent.com/Fission-AI/OpenSpec/", "what": "OpenSpec's README, for the plugin README's comparison table"},
     {"prefix": "https://raw.githubusercontent.com/teaualune/mobile-handytool-skills/", "what": "the owner's sibling plugins the skills name: crash-issue-fixer, store-submission-prep, figma-design-to-artifact"},
     {"prefix": "https://raw.githubusercontent.com/teaualune/mobile-compat-skills/", "what": "the owner's sibling plugin the READMEs name: iphone-duo-ui-fix"},
-    {"prefix": "https://github.com/teaualune/flutter-feature-skills/", "what": "this repo on GitHub: the plugin README links its TESTING.md and issues"},
+    {"prefix": "https://github.com/teaualune/mobile-dev-skills/", "what": "this repo on GitHub: the plugin README links its TESTING.md and issues"},
     {"prefix": "https://github.com/teaualune/mobile-handytool-skills/", "what": "the sibling marketplace the root README links"},
     {"prefix": "https://github.com/teaualune/mobile-compat-skills/", "what": "the sibling marketplace the root README links"}
   ],

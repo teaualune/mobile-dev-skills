@@ -13,7 +13,7 @@ The plugin lives in `plugins/mobile-dev-skills/`, the **plugin folder**, which i
 The only end-to-end check is loading the checkout as a plugin from a real Flutter, SwiftUI or Compose project and invoking the skill:
 
 ```bash
-cd /path/to/an-app && claude --plugin-dir /path/to/flutter-feature-skills/plugins/mobile-dev-skills
+cd /path/to/an-app && claude --plugin-dir /path/to/mobile-dev-skills/plugins/mobile-dev-skills
 # then: /mobile-dev-skills:feature-workflow …
 ```
 

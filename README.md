@@ -2,23 +2,23 @@
 
 A Claude Code marketplace with one plugin, `mobile-dev-skills`: a two-phase feature workflow for Flutter, native SwiftUI and native Jetpack Compose apps (requirements → spec → approval → tested code → verification → review), spec maintenance, and build & store deployment. Its specs are contracts with the code: each requirement is anchored to the code that carries it and each scenario to its test, and a conformance check confirms the anchors and runs those tests. The plugin is the [`plugins/mobile-dev-skills/`](plugins/mobile-dev-skills/) folder; [its README](plugins/mobile-dev-skills/README.md) describes what it does differently, the skills, manual copies, per-project adjustments and the plugin's options. Coming from `flutter-skills` v0.2.0? Its [migration guide](plugins/mobile-dev-skills/MIGRATION.md) says what to reinstall and how your specs carry over.
 
-**Alpha.** The plugin is in alpha, in versions `0.1.0-alpha.N`: its skills are complete, but many of their paths have run only in test projects so far. [TESTING.md](TESTING.md) lists the end-to-end cases, which of them have passed, and what leaving alpha takes. Report problems as [issues](https://github.com/teaualune/flutter-feature-skills/issues).
+**Alpha.** The plugin is in alpha, in versions `0.1.0-alpha.N`: its skills are complete, but many of their paths have run only in test projects so far. [TESTING.md](TESTING.md) lists the end-to-end cases, which of them have passed, and what leaving alpha takes. Report problems as [issues](https://github.com/teaualune/mobile-dev-skills/issues).
 
 ## Install
 
 Prerequisite: Claude Code v2.1.271 or later.
 
 ```
-/plugin marketplace add teaualune/flutter-feature-skills
+/plugin marketplace add teaualune/mobile-dev-skills
 /plugin install mobile-dev-skills@mobile-dev-skills
 ```
 
-Update later with `/plugin marketplace update mobile-dev-skills`, then `/plugin update mobile-dev-skills`. An install of `flutter-skills` doesn't update to this plugin; the migration guide says how to replace it, or how to keep v0.2.0 by adding its marketplace at the tag, `teaualune/flutter-feature-skills#v0.2.0`.
+Update later with `/plugin marketplace update mobile-dev-skills`, then `/plugin update mobile-dev-skills`. An install of `flutter-skills` doesn't update to this plugin; the migration guide says how to replace it, or how to keep v0.2.0 by adding its marketplace at the tag, `teaualune/mobile-dev-skills#v0.2.0`.
 
 To try a local checkout without installing anything into `~/.claude`:
 
 ```bash
-claude --plugin-dir /path/to/flutter-feature-skills/plugins/mobile-dev-skills
+claude --plugin-dir /path/to/mobile-dev-skills/plugins/mobile-dev-skills
 ```
 
 The same author's [mobile-handytool-skills](https://github.com/teaualune/mobile-handytool-skills) and [mobile-compat](https://github.com/teaualune/mobile-compat-skills) marketplaces hold four plugins the skills point to where this one stops; the plugin README's "Related plugins" lists them.

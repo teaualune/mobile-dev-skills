@@ -2254,5 +2254,5 @@ flowchart TD
 ```
 
 - The Test plan and section 4's native and permission subsections arrive with the first change that needs them (`feature-spec` "When updating an existing spec"; `MIGRATION.md` section 2).
-- Staying on v0.2.0: `/plugin marketplace remove flutter-skills`, `/plugin marketplace add teaualune/flutter-feature-skills#v0.2.0`, `/plugin install flutter-skills@flutter-skills`, with `--scope project` and a commit for a team install (`MIGRATION.md` section 1, "Staying on v0.2.0").
+- Staying on v0.2.0: `/plugin marketplace remove flutter-skills`, `/plugin marketplace add teaualune/mobile-dev-skills#v0.2.0`, `/plugin install flutter-skills@flutter-skills`, with `--scope project` and a commit for a team install (`MIGRATION.md` section 1, "Staying on v0.2.0").
 - A project that ran a pre-release build keeps `.flutter-skills/` in use, and is asked which folder to use only when the old one holds unfinished work (`feature-workflow` "State files"; `MIGRATION.md` section 4).

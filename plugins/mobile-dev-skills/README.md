@@ -8,7 +8,7 @@ Paths in this README are from the folder that holds it, the plugin's own folder.
 
 ## Alpha
 
-The plugin is in alpha, in versions `0.1.0-alpha.N`. Its skills are complete, but many of their paths have run only in test projects so far; its author's own apps are its end-to-end tests, and [the repository's test plan](https://github.com/teaualune/flutter-feature-skills/blob/main/TESTING.md) lists the cases and which have passed. Until it leaves alpha, read what a run wrote before you commit it, expect changes between versions, and report problems as [issues](https://github.com/teaualune/flutter-feature-skills/issues). To stay on v0.2.0 until a stable release, see [MIGRATION.md](MIGRATION.md)'s "Staying on v0.2.0".
+The plugin is in alpha, in versions `0.1.0-alpha.N`. Its skills are complete, but many of their paths have run only in test projects so far; its author's own apps are its end-to-end tests, and [the repository's test plan](https://github.com/teaualune/mobile-dev-skills/blob/main/TESTING.md) lists the cases and which have passed. Until it leaves alpha, read what a run wrote before you commit it, expect changes between versions, and report problems as [issues](https://github.com/teaualune/mobile-dev-skills/issues). To stay on v0.2.0 until a stable release, see [MIGRATION.md](MIGRATION.md)'s "Staying on v0.2.0".
 
 ## What it does differently
 
@@ -101,7 +101,7 @@ Prerequisite: [Claude Code](https://claude.com/claude-code) v2.1.271 or later (t
 ### As a plugin (recommended)
 
 ```
-/plugin marketplace add teaualune/flutter-feature-skills
+/plugin marketplace add teaualune/mobile-dev-skills
 /plugin install mobile-dev-skills@mobile-dev-skills
 ```
 
