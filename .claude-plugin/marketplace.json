@@ -1,14 +1,14 @@
 {
-  "name": "flutter-skills",
+  "name": "mobile-dev-skills",
   "owner": {
     "name": "teaualune",
     "email": "teaualune@gmail.com"
   },
   "plugins": [
     {
-      "name": "flutter-skills",
-      "source": "./",
-      "description": "Flutter workflows for Claude Code: two-phase feature development (intake → spec → approval → scaffold), spec maintenance, and build & store deployment (version bump → TestFlight / Play internal testing)."
+      "name": "mobile-dev-skills",
+      "source": "./plugins/mobile-dev-skills",
+      "description": "Alpha. Mobile app workflows for Claude Code: two-phase feature development (intake → spec → approval → tested code → verification → review) for Flutter, native SwiftUI and native Jetpack Compose apps, spec maintenance, and build & store deployment (version bump and build for Flutter and native SwiftUI apps → TestFlight / Play internal testing; the store uploader also works for React Native builds)."
     }
   ]
 }

@@ -1,0 +1,11 @@
+schema_version: "1.0"
+name: mono-cross-part-noparent
+context:
+  scaffold_script: monorepo-noparent.sh
+graders:
+  - name: no-plugin-intake-or-workflow
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:mobile-dev-skills:)?(?:feature-intake|feature-workflow)"'
+    min: 0
+    max: 0

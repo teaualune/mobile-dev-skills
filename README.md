@@ -1,79 +1,41 @@
-# flutter-skills
+# mobile-dev-skills
 
-A Claude Code **plugin** bundling seven Flutter skills in two families.
+A Claude Code marketplace with one plugin, `mobile-dev-skills`: a two-phase feature workflow for Flutter, native SwiftUI and native Jetpack Compose apps (requirements → spec → approval → tested code → verification → review), spec maintenance, and build & store deployment. Its specs are contracts with the code: each requirement is anchored to the code that carries it and each scenario to its test, and a conformance check confirms the anchors and runs those tests. The plugin is the [`plugins/mobile-dev-skills/`](plugins/mobile-dev-skills/) folder; [its README](plugins/mobile-dev-skills/README.md) describes what it does differently, the skills, manual copies, per-project adjustments and the plugin's options. Coming from `flutter-skills` v0.2.0? Its [migration guide](plugins/mobile-dev-skills/MIGRATION.md) says what to reinstall and how your specs carry over.
 
-**Feature workflow** — the two-phase flow (requirements → spec → approval → implementation):
+**Alpha.** The plugin is in alpha, in versions `0.1.0-alpha.N`: its skills are complete, but many of their paths have run only in test projects so far. [TESTING.md](TESTING.md) lists the end-to-end cases, which of them have passed, and what leaving alpha takes. Report problems as [issues](https://github.com/teaualune/flutter-feature-skills/issues).
 
-- `flutter-feature/` — the orchestrator (user-invoked); runs Phase 1 (requirements → spec → TBD-resolution loop → approval) and Phase 2 (implementation)
-- `feature-intake/` — interactive requirement gathering (Intake Sheet)
-- `flutter-feature-spec/` — spec document production
-- `flutter-feature-scaffold/` — code generation rules + Riverpod/go_router/Dio templates
-- `flutter-feature-spec-compact/` — standalone spec maintenance (not part of the orchestrated chain): folds a spec's accumulated change records (changelogs, addenda, phased deltas) back into its base sections so only the current state remains, asking first whether the removed history should be extracted to a sibling changelog file
+## Install
 
-**Build & deploy** — releasing to the stores:
-
-- `flutter-build-deploy/` — build-and-deploy in one flow: bumps version/build numbers and builds artifacts via the project's `scripts/build-version.sh` (installed from this skill's `templates/` on first use and adapted to the project), then hands the exact artifact paths to `flutter-store-deploy`
-- `flutter-store-deploy/` — uploads already-built artifacts: iOS `.xcarchive` → TestFlight via native Apple CLIs, Android `.aab` → Play "Internal testing" via the Play Developer API (with an assisted Play Console browser fallback); per-project config lives in the target project's `.flutter-store-deploy/`
-
-All skills live under `skills/`. The `Explore` and `Plan` subagents referenced by `flutter-feature` are built-in Claude Code agent types — nothing extra to install.
-
-## Installation
-
-Prerequisite: [Claude Code](https://claude.com/claude-code) installed and working.
-
-### As a plugin (recommended)
+Prerequisite: Claude Code v2.1.271 or later.
 
 ```
 /plugin marketplace add teaualune/flutter-feature-skills
-/plugin install flutter-skills@flutter-skills
+/plugin install mobile-dev-skills@mobile-dev-skills
 ```
 
-Plugin skills are namespaced, e.g. `/flutter-skills:flutter-feature add a saved-articles screen`. Update later with `/plugin update flutter-skills`.
+Update later with `/plugin marketplace update mobile-dev-skills`, then `/plugin update mobile-dev-skills`. An install of `flutter-skills` doesn't update to this plugin; the migration guide says how to replace it, or how to keep v0.2.0 by adding its marketplace at the tag, `teaualune/flutter-feature-skills#v0.2.0`.
 
 To try a local checkout without installing anything into `~/.claude`:
 
 ```bash
-claude --plugin-dir /path/to/flutter-feature-skills
+claude --plugin-dir /path/to/flutter-feature-skills/plugins/mobile-dev-skills
 ```
 
-### Manual copy (no plugin)
+The same author's [mobile-handytool-skills](https://github.com/teaualune/mobile-handytool-skills) and [mobile-compat](https://github.com/teaualune/mobile-compat-skills) marketplaces hold four plugins the skills point to where this one stops; the plugin README's "Related plugins" lists them.
 
-Copy skill folders from `skills/` into the target project's `.claude/skills/` directory (create it if it doesn't exist):
+## Repository layout
 
-```bash
-cd /path/to/this/repo
-mkdir -p /path/to/your-flutter-app/.claude/skills
-cp -R skills/* /path/to/your-flutter-app/.claude/skills/
-```
+- `plugins/mobile-dev-skills/` — the plugin, and all an install loads: its skills, agents, platform adapters, the record of the agents adapted from ECC, its README, the migration guide for v0.2.0 users, `LICENSE` and notices.
+- `.claude-plugin/marketplace.json` — the marketplace, which lists the plugin.
+- `CLAUDE.md` — how the repo is organized and the cross-file contracts to keep when editing it.
+- `ROADMAP.md` — work that isn't scheduled yet.
+- `TESTING.md` — the end-to-end cases, their evidence, and what leaving alpha takes.
+- `.claude/skills/maintainer/` and `maintenance/` — the owner's maintenance skill and its state, the trigger evals (`maintenance/evals/`) and a chart of every use case (`maintenance/use-case-flows.md`).
 
-Copy only the family you need if you prefer — the feature workflow (five folders) and the deploy pair (two folders) are independent. Commit `.claude/skills/` so the whole team gets the workflow. Copying into `~/.claude/skills/` instead makes them personal skills available in every project; project-level installation is preferred for teams.
+## Maintaining this repo
 
-Note for brand-new projects: the feature workflow detects the tech stack from existing code, and a fresh `flutter create` app has none of it yet. Either add your chosen packages (state management, routing, HTTP) to `pubspec.yaml` before the first feature, or accept the announced fallback stack (Riverpod + go_router + Dio + freezed) when the skill asks.
+A checkout of this repo includes an owner-only `/maintainer` skill in `.claude/skills/maintainer/`. It audits the cross-file contracts and checks toolchain, package and Claude Code releases. It loads only in sessions started inside the checkout. A plugin install loads and caches only `plugins/mobile-dev-skills/`; the marketplace's clone of the repo, in `~/.claude/plugins/marketplaces/`, still has these files, but nothing loads them there. CLAUDE.md's "Maintaining this repo" section describes it. After editing anything, run `python3 -I .claude/skills/maintainer/scripts/check_contracts.py`.
 
-### Verify and use
+## License
 
-1. Run `claude` in the project root (with `--plugin-dir` if testing a local checkout).
-2. Type `/flutter-skills:flutter-feature` (or `/flutter-feature` for a manual copy) — it should autocomplete. Invoke it with a feature description.
-3. `flutter-feature` is the feature-workflow entry point; it orchestrates the intake → spec → scaffold skills automatically. `flutter-feature-spec-compact` sits outside that chain — invoke it (or let it auto-trigger on "compact the spec") when an existing spec has accumulated change history worth cleaning up.
-4. For releases, ask to "build and deploy X.Y.Z to TestFlight/Play" (`flutter-build-deploy`) or, for an artifact that is already built, "upload the archive to TestFlight" (`flutter-store-deploy`).
-
-## Per-project adjustments
-
-### Feature workflow
-
-`flutter-feature/SKILL.md` contains a few example defaults that can be replaced with the target project's own conventions:
-
-- Spec doc location/naming (e.g. `docs/specs/<feature-name>-feature-spec.md`, `docs/specs/artifacts/`) and API reference (e.g. `docs/api-reference.md`)
-- Any language conventions the project enforces for spec documents
-- Post-generation commands (e.g. `dart run build_runner build --delete-conflicting-outputs`, `flutter gen-l10n`, `flutter analyze`)
-
-The skill discovers these conventions dynamically when they differ, so the bundle works as-is; hardcoding the target project's values just gives it better defaults.
-
-Two rules are built in rather than discovered: Chinese text in spec documents is always Traditional Chinese, and Flutter/Dart commands run through `fvm` (`fvm flutter …`, `fvm dart …`) when the project has `.fvmrc` and `fvm` is installed; otherwise it uses plain `flutter`/`dart`, asking first whether you want `fvm` only when exactly one of the two is present.
-
-### Build & deploy
-
-Project-specific values never live in the skills — they live in two places inside the target project, both created on first use:
-
-- `scripts/build-version.sh` — copied from `flutter-build-deploy/templates/` and adapted via the `Project config — ADAPT` block at its top (app name, flutter command, flavors, scheme/configuration naming, iOS deployment-target fallback, required privacy usage keys). It also expects pubspec.yaml to carry the version-bookkeeping convention: `version: <name>+<iosBuild>` plus a `# android: <androidBuild> = …` comment line for the Android versionCode.
-- `.flutter-store-deploy/` — deploy config (`ios.json` with ExportOptions overrides, `android.json` with the Play service-account key path and Play Console hints), created interactively by `flutter-store-deploy`'s setup mode. Safe to commit; the service-account key itself must live outside the repo.
+[MIT](LICENSE). The plugin folder carries a copy, with ECC's MIT notice for the agents adapted from it in [THIRD_PARTY_NOTICES.md](plugins/mobile-dev-skills/THIRD_PARTY_NOTICES.md) and trademark disclaimers in [DISCLAIMERS.md](plugins/mobile-dev-skills/DISCLAIMERS.md).

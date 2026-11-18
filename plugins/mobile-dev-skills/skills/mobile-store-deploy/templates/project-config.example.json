@@ -1,0 +1,35 @@
+{
+  "_readme": [
+    "Examples of the optional per-project config files in .mobile-store-deploy/ at the project root (the pre-rename .flutter-store-deploy/ is still read).",
+    "Copy each top-level object below into its own file: .mobile-store-deploy/ios.json, .mobile-store-deploy/android.json and, if used, .mobile-store-deploy/ios-api-key.json.",
+    "ios.json holds verbatim ExportOptions.plist keys, deep-merged over templates/ExportOptions.default.plist (project value wins).",
+    "For automatic signing, ios.json can be as small as: {\"signingStyle\": \"automatic\"}.",
+    "android.json: serviceAccountKeyPath enables Phase 1 (Play Developer API); when absent, Phase 2 (Claude in Chrome) is used with the hints below.",
+    "android.json: aabPathTemplate is optional; {flavor} is replaced by the flavor name, and the value shown is the default (Flutter's output path).",
+    "ios-api-key.json is optional and per machine: an App Store Connect API key for unattended iOS uploads (the environment's ASC_API_KEY_PATH, ASC_API_KEY_ID and ASC_API_ISSUER_ID can replace it). It must be gitignored; the upload script refuses it otherwise.",
+    "The rest of this config is safe to commit — the service-account key and the .p8 API key themselves must live OUTSIDE the repo."
+  ],
+  "ios.json": {
+    "signingStyle": "manual",
+    "teamID": "ABCDE12345",
+    "signingCertificate": "Apple Distribution",
+    "provisioningProfiles": {
+      "com.example.app": "Example App Store Profile"
+    }
+  },
+  "android.json": {
+    "serviceAccountKeyPath": "~/secrets/play-service-account.json",
+    "aabPathTemplate": "build/app/outputs/bundle/{flavor}Release/app-{flavor}-release.aab",
+    "developerId": "1234567890123456789",
+    "teamName": "Example Team LLC",
+    "appNames": {
+      "production": "Example App",
+      "staging": "Example App (Staging)"
+    }
+  },
+  "ios-api-key.json": {
+    "keyPath": "~/secrets/AuthKey_ABC123DEFG.p8",
+    "keyID": "ABC123DEFG",
+    "issuerID": "00000000-0000-0000-0000-000000000000"
+  }
+}

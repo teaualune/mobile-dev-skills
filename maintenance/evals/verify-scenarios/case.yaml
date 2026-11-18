@@ -1,0 +1,15 @@
+schema_version: "1.0"
+name: verify-scenarios
+context:
+  scaffold_script: flutter-app.sh
+graders:
+  - name: fired
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:mobile-dev-skills:)?feature-verify"'
+  - name: no-other-plugin-skill
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:mobile-dev-skills:)?(?:feature-intake|mobile-build-deploy|feature-workflow|feature-scaffold|feature-spec|feature-spec-compact|mobile-store-deploy)"'
+    min: 0
+    max: 0

@@ -1,0 +1,115 @@
+{
+  "_doc": "Maintainer source allowlist, release feeds and doc pages. Fetch nothing outside `allowlist`; propose additions instead. `affects` lists what a feed's changes can break; `notes` names the pages to read when it changes; `requires` keeps a feed inactive (reported, not counted) while that file is missing. check_releases.py always takes the allowlist from its own checkout's copy of this file. Pages are due when never reviewed, older than `review_days`, or when a `trigger_feeds` feed changed by a minor version or more.",
+  "allowlist": [
+    {"prefix": "https://docs.flutter.dev/", "what": "Flutter docs, release notes, breaking changes"},
+    {"prefix": "https://storage.googleapis.com/flutter_infra_release/releases/", "what": "Flutter release metadata"},
+    {"prefix": "https://dart.dev/", "what": "Dart docs"},
+    {"prefix": "https://pub.dev/", "what": "package metadata and changelogs"},
+    {"prefix": "https://fvm.app/", "what": "fvm docs"},
+    {"prefix": "https://github.com/btwld/fvm/", "what": "fvm releases (repo moved from leoafarias/fvm)"},
+    {"prefix": "https://developer.apple.com/", "what": "Apple developer docs, news and release feed"},
+    {"prefix": "https://developer.android.com/", "what": "Android developer docs: AGP, target SDK"},
+    {"prefix": "https://dl.google.com/dl/android/maven2/", "what": "Google Maven metadata (AGP versions)"},
+    {"prefix": "https://repo1.maven.org/maven2/", "what": "Maven Central metadata (the Compose adapter's libraries and the Kotlin Gradle plugin)"},
+    {"prefix": "https://developers.google.com/android-publisher/", "what": "Play Developer API docs"},
+    {"prefix": "https://androidpublisher.googleapis.com/$discovery/", "what": "Play Developer API discovery document"},
+    {"prefix": "https://code.claude.com/docs/", "what": "Claude Code docs"},
+    {"prefix": "https://raw.githubusercontent.com/anthropics/claude-code/", "what": "Claude Code CHANGELOG"},
+    {"prefix": "https://github.com/anthropics/claude-code/", "what": "Claude Code releases"},
+    {"prefix": "https://github.com/affaan-m/ECC/", "what": "ECC, by commit or tag only, never a branch"},
+    {"prefix": "https://raw.githubusercontent.com/affaan-m/ECC/", "what": "ECC files, by commit or tag only, never a branch"},
+    {"prefix": "https://github.com/github/spec-kit/", "what": "Spec Kit, for the plugin README's comparison table"},
+    {"prefix": "https://raw.githubusercontent.com/github/spec-kit/", "what": "Spec Kit's README, for the plugin README's comparison table"},
+    {"prefix": "https://github.com/Fission-AI/OpenSpec/", "what": "OpenSpec, for the plugin README's comparison table"},
+    {"prefix": "https://raw.githubusercontent.com/Fission-AI/OpenSpec/", "what": "OpenSpec's README, for the plugin README's comparison table"},
+    {"prefix": "https://raw.githubusercontent.com/teaualune/mobile-handytool-skills/", "what": "the owner's sibling plugins the skills name: crash-issue-fixer, store-submission-prep, figma-design-to-artifact"},
+    {"prefix": "https://raw.githubusercontent.com/teaualune/mobile-compat-skills/", "what": "the owner's sibling plugin the READMEs name: iphone-duo-ui-fix"},
+    {"prefix": "https://github.com/teaualune/flutter-feature-skills/", "what": "this repo on GitHub: the plugin README links its TESTING.md and issues"},
+    {"prefix": "https://github.com/teaualune/mobile-handytool-skills/", "what": "the sibling marketplace the root README links"},
+    {"prefix": "https://github.com/teaualune/mobile-compat-skills/", "what": "the sibling marketplace the root README links"}
+  ],
+  "feeds": [
+    {
+      "id": "flutter", "mode": "toolchain", "kind": "flutter-releases",
+      "url": "https://storage.googleapis.com/flutter_infra_release/releases/releases_macos.json",
+      "affects": ["plugins/mobile-dev-skills/platforms/flutter/build-version.sh", "plugins/mobile-dev-skills/platforms/flutter/templates/", "plugins/mobile-dev-skills/platforms/flutter/PLATFORM.md", "plugins/mobile-dev-skills/platforms/flutter/standards.md"],
+      "notes": ["flutter-breaking-changes", "flutter-release-notes"]
+    },
+    {
+      "id": "fvm", "mode": "toolchain", "kind": "pub-package", "package": "fvm",
+      "affects": ["CLAUDE.md (fvm rule)", "plugins/mobile-dev-skills/platforms/flutter/PLATFORM.md (Commands, Build adapter)", "plugins/mobile-dev-skills/skills/mobile-build-deploy/SKILL.md", "plugins/mobile-dev-skills/platforms/flutter/build-version.sh"],
+      "notes": ["fvm-configuration", "fvm-releases"]
+    },
+    {
+      "id": "xcode", "mode": "toolchain", "kind": "apple-rss",
+      "url": "https://developer.apple.com/news/releases/rss/releases.rss",
+      "match": "^Xcode (\\d+(?:\\.\\d+)*) \\(", "exclude": "beta|\\bRC\\b|release candidate",
+      "affects": ["plugins/mobile-dev-skills/platforms/flutter/build-version.sh", "plugins/mobile-dev-skills/platforms/swiftui/build-version.sh", "plugins/mobile-dev-skills/platforms/swiftui/PLATFORM.md (Build adapter)", "plugins/mobile-dev-skills/skills/mobile-store-deploy/scripts/ios_upload.sh", "plugins/mobile-dev-skills/skills/mobile-store-deploy/scripts/ios_find_archive.sh", "plugins/mobile-dev-skills/skills/mobile-store-deploy/templates/ExportOptions.default.plist", "plugins/mobile-dev-skills/skills/mobile-store-deploy/SKILL.md", "plugins/mobile-dev-skills/platforms/swiftui/PLATFORM.md (Commands, Project layout)", "plugins/mobile-dev-skills/platforms/swiftui/standards.md", "plugins/mobile-dev-skills/platforms/swiftui/templates/observable-urlsession/"],
+      "notes": ["xcode-release-notes", "apple-upcoming-requirements"]
+    },
+    {
+      "id": "agp", "mode": "toolchain", "kind": "maven-metadata",
+      "url": "https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle/maven-metadata.xml",
+      "affects": ["plugins/mobile-dev-skills/platforms/flutter/build-version.sh", "plugins/mobile-dev-skills/skills/mobile-store-deploy/SKILL.md (aabPathTemplate shapes)", "plugins/mobile-dev-skills/platforms/compose/PLATFORM.md (Stack layer fallback, Commands)", "plugins/mobile-dev-skills/platforms/compose/templates/viewmodel-navigation-retrofit/"],
+      "notes": ["agp-release-notes"]
+    },
+    {
+      "id": "play-api", "mode": "toolchain", "kind": "google-discovery",
+      "url": "https://androidpublisher.googleapis.com/$discovery/rest?version=v3",
+      "methods": ["edits.insert", "edits.commit", "edits.bundles.upload", "edits.tracks.update"],
+      "schemas": ["AppEdit", "Bundle", "Track", "TrackRelease"],
+      "affects": ["plugins/mobile-dev-skills/skills/mobile-store-deploy/scripts/android_phase1_upload.sh", "plugins/mobile-dev-skills/skills/mobile-store-deploy/SKILL.md"],
+      "notes": ["play-api-reference"]
+    },
+    {"id": "flutter_riverpod", "mode": "packages", "kind": "pub-package", "package": "flutter_riverpod", "affects": ["plugins/mobile-dev-skills/platforms/flutter/templates/riverpod-gorouter-dio/provider_manual.dart", "plugins/mobile-dev-skills/platforms/flutter/templates/riverpod-gorouter-dio/screen_async.dart", "plugins/mobile-dev-skills/platforms/flutter/templates/riverpod-gorouter-dio/screen_test.dart", "plugins/mobile-dev-skills/platforms/flutter/PLATFORM.md"]},
+    {"id": "riverpod_annotation", "mode": "packages", "kind": "pub-package", "package": "riverpod_annotation", "affects": ["plugins/mobile-dev-skills/platforms/flutter/templates/riverpod-gorouter-dio/provider_codegen.dart", "plugins/mobile-dev-skills/platforms/flutter/PLATFORM.md"]},
+    {"id": "riverpod_generator", "mode": "packages", "kind": "pub-package", "package": "riverpod_generator", "affects": ["plugins/mobile-dev-skills/platforms/flutter/templates/riverpod-gorouter-dio/provider_codegen.dart"]},
+    {"id": "go_router", "mode": "packages", "kind": "pub-package", "package": "go_router", "affects": ["plugins/mobile-dev-skills/platforms/flutter/templates/riverpod-gorouter-dio/router_route.dart", "plugins/mobile-dev-skills/platforms/flutter/PLATFORM.md (Detection report, Spec notation)"]},
+    {"id": "dio", "mode": "packages", "kind": "pub-package", "package": "dio", "affects": ["plugins/mobile-dev-skills/platforms/flutter/templates/riverpod-gorouter-dio/repository.dart", "plugins/mobile-dev-skills/platforms/flutter/PLATFORM.md (Detection report)"]},
+    {"id": "freezed", "mode": "packages", "kind": "pub-package", "package": "freezed", "affects": ["plugins/mobile-dev-skills/platforms/flutter/templates/riverpod-gorouter-dio/entity_freezed.dart"]},
+    {"id": "freezed_annotation", "mode": "packages", "kind": "pub-package", "package": "freezed_annotation", "affects": ["plugins/mobile-dev-skills/platforms/flutter/templates/riverpod-gorouter-dio/entity_freezed.dart"]},
+    {"id": "json_serializable", "mode": "packages", "kind": "pub-package", "package": "json_serializable", "affects": ["plugins/mobile-dev-skills/platforms/flutter/templates/riverpod-gorouter-dio/entity_freezed.dart"]},
+    {"id": "build_runner", "mode": "packages", "kind": "pub-package", "package": "build_runner", "affects": ["plugins/mobile-dev-skills/platforms/flutter/templates/riverpod-gorouter-dio/entity_freezed.dart (build_runner comment)", "plugins/mobile-dev-skills/platforms/flutter/PLATFORM.md (Commands)"]},
+    {"id": "compose-bom", "mode": "packages", "kind": "maven-metadata", "url": "https://dl.google.com/dl/android/maven2/androidx/compose/compose-bom/maven-metadata.xml", "affects": ["plugins/mobile-dev-skills/platforms/compose/PLATFORM.md (Stack layer, Templates)", "plugins/mobile-dev-skills/platforms/compose/templates/viewmodel-navigation-retrofit/"]},
+    {"id": "compose-ui-test-junit4", "mode": "packages", "kind": "maven-metadata", "url": "https://dl.google.com/dl/android/maven2/androidx/compose/ui/ui-test-junit4/maven-metadata.xml", "affects": ["plugins/mobile-dev-skills/platforms/compose/standards.md (Screens: the v2 rule from 1.11)", "plugins/mobile-dev-skills/platforms/compose/templates/viewmodel-navigation-retrofit/ExampleListScreenTest.kt"]},
+    {"id": "navigation-compose", "mode": "packages", "kind": "maven-metadata", "url": "https://dl.google.com/dl/android/maven2/androidx/navigation/navigation-compose/maven-metadata.xml", "affects": ["plugins/mobile-dev-skills/platforms/compose/PLATFORM.md (Stack layer, Code entry points, Spec notation)", "plugins/mobile-dev-skills/platforms/compose/templates/viewmodel-navigation-retrofit/ExampleNavigation.kt"]},
+    {"id": "hilt-lifecycle-viewmodel-compose", "mode": "packages", "kind": "maven-metadata", "url": "https://dl.google.com/dl/android/maven2/androidx/hilt/hilt-lifecycle-viewmodel-compose/maven-metadata.xml", "affects": ["plugins/mobile-dev-skills/platforms/compose/PLATFORM.md (Stack layer fallback)", "plugins/mobile-dev-skills/platforms/compose/templates/viewmodel-navigation-retrofit/ExampleListScreen.kt"]},
+    {"id": "espresso-core", "mode": "packages", "kind": "maven-metadata", "url": "https://dl.google.com/dl/android/maven2/androidx/test/espresso/espresso-core/maven-metadata.xml", "affects": ["plugins/mobile-dev-skills/platforms/compose/PLATFORM.md (Project layout: Espresso for targetSdk 37)"]},
+    {"id": "hilt-android", "mode": "packages", "kind": "maven-metadata", "url": "https://repo1.maven.org/maven2/com/google/dagger/hilt-android/maven-metadata.xml", "affects": ["plugins/mobile-dev-skills/platforms/compose/PLATFORM.md (Stack layer fallback: Dagger 2.59 and AGP 9)", "plugins/mobile-dev-skills/platforms/compose/templates/viewmodel-navigation-retrofit/ExampleModule.kt", "plugins/mobile-dev-skills/platforms/compose/templates/viewmodel-navigation-retrofit/ExampleListViewModel.kt"]},
+    {"id": "retrofit", "mode": "packages", "kind": "maven-metadata", "url": "https://repo1.maven.org/maven2/com/squareup/retrofit2/retrofit/maven-metadata.xml", "affects": ["plugins/mobile-dev-skills/platforms/compose/templates/viewmodel-navigation-retrofit/ExampleApi.kt", "plugins/mobile-dev-skills/platforms/compose/templates/viewmodel-navigation-retrofit/ExampleModule.kt", "plugins/mobile-dev-skills/platforms/compose/templates/viewmodel-navigation-retrofit/ExampleRepositoryTest.kt"]},
+    {"id": "okhttp", "mode": "packages", "kind": "maven-metadata", "url": "https://repo1.maven.org/maven2/com/squareup/okhttp3/okhttp/maven-metadata.xml", "affects": ["plugins/mobile-dev-skills/platforms/compose/templates/viewmodel-navigation-retrofit/ExampleModule.kt", "plugins/mobile-dev-skills/platforms/compose/templates/viewmodel-navigation-retrofit/ExampleRepositoryTest.kt (mockwebserver3)"]},
+    {"id": "kotlinx-serialization-json", "mode": "packages", "kind": "maven-metadata", "url": "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-json/maven-metadata.xml", "affects": ["plugins/mobile-dev-skills/platforms/compose/templates/viewmodel-navigation-retrofit/Example.kt", "plugins/mobile-dev-skills/platforms/compose/templates/viewmodel-navigation-retrofit/ExampleModule.kt"]},
+    {"id": "robolectric", "mode": "packages", "kind": "maven-metadata", "url": "https://repo1.maven.org/maven2/org/robolectric/robolectric/maven-metadata.xml", "affects": ["plugins/mobile-dev-skills/platforms/compose/PLATFORM.md (Project layout, Commands: the JDK for SDK 36+)", "plugins/mobile-dev-skills/platforms/compose/standards.md (Screens)"]},
+    {"id": "kotlin-gradle-plugin", "mode": "toolchain", "kind": "maven-metadata", "url": "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugin/maven-metadata.xml", "affects": ["plugins/mobile-dev-skills/platforms/compose/PLATFORM.md (Stack layer)", "CLAUDE.md (Supported versions: Kotlin and AGP for the Compose adapter)", "plugins/mobile-dev-skills/agents/kotlin-reviewer.md (Inputs: strong skipping)"]},
+    {
+      "id": "claude-code", "mode": "claude-code", "kind": "changelog-md",
+      "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md",
+      "keywords": ["skill", "subagent", "frontmatter", "userconfig", "user_config", "claude_skill_dir", "substitution", "allowed-tools", "disable-model-invocation", "plugin.json", "marketplace", "plugin validate", "--plugin-dir", "plugin option", "plugin skill", "plugin agent", "agents/"],
+      "affects": ["plugins/mobile-dev-skills/skills/*/SKILL.md (frontmatter, substitutions)", "plugins/mobile-dev-skills/.claude-plugin/plugin.json", ".claude-plugin/marketplace.json", "CLAUDE.md (Plugin options contract, version claims)", ".claude/skills/maintainer/SKILL.md"]
+    },
+    {
+      "id": "ecc", "mode": "ecc", "kind": "git-tags", "url": "https://github.com/affaan-m/ECC", "requires": "plugins/mobile-dev-skills/third_party/ecc/manifest.json",
+      "affects": ["plugins/mobile-dev-skills/third_party/ecc/manifest.json and every local_path it lists"]
+    }
+  ],
+  "pages": [
+    {"id": "flutter-breaking-changes", "mode": "toolchain", "url": "https://docs.flutter.dev/release/breaking-changes", "trigger_feeds": ["flutter"]},
+    {"id": "flutter-release-notes", "mode": "toolchain", "url": "https://docs.flutter.dev/release/release-notes", "trigger_feeds": ["flutter"]},
+    {"id": "fvm-configuration", "mode": "toolchain", "url": "https://fvm.app/documentation/getting-started/configuration", "trigger_feeds": ["fvm"], "review_days": 180},
+    {"id": "fvm-releases", "mode": "toolchain", "url": "https://github.com/btwld/fvm/releases", "trigger_feeds": ["fvm"]},
+    {"id": "xcode-release-notes", "mode": "toolchain", "url": "https://developer.apple.com/documentation/xcode-release-notes.md", "trigger_feeds": ["xcode"]},
+    {"id": "apple-upcoming-requirements", "mode": "toolchain", "url": "https://developer.apple.com/news/upcoming-requirements/", "review_days": 60},
+    {"id": "agp-release-notes", "mode": "toolchain", "url": "https://developer.android.com/build/releases/gradle-plugin", "trigger_feeds": ["agp"]},
+    {"id": "play-target-sdk", "mode": "toolchain", "url": "https://developer.android.com/google/play/requirements/target-sdk", "review_days": 90},
+    {"id": "play-api-reference", "mode": "toolchain", "url": "https://developers.google.com/android-publisher/api-ref/rest", "trigger_feeds": ["play-api"]},
+    {"id": "cc-skills", "mode": "claude-code", "url": "https://code.claude.com/docs/en/skills.md", "review_days": 90},
+    {"id": "cc-subagents", "mode": "claude-code", "url": "https://code.claude.com/docs/en/sub-agents.md", "review_days": 90},
+    {"id": "cc-plugin-manifest", "mode": "claude-code", "url": "https://code.claude.com/docs/en/plugins/manifest-reference.md", "review_days": 90},
+    {"id": "cc-marketplace", "mode": "claude-code", "url": "https://code.claude.com/docs/en/plugins/marketplace-reference.md", "review_days": 180},
+    {"id": "cc-plugin-loading", "mode": "claude-code", "url": "https://code.claude.com/docs/en/plugins/loading.md", "review_days": 180},
+    {"id": "cc-plugin-cli", "mode": "claude-code", "url": "https://code.claude.com/docs/en/plugins/cli-reference.md", "review_days": 180},
+    {"id": "cc-plugin-evals", "mode": "claude-code", "url": "https://code.claude.com/docs/en/plugin-evals.md", "review_days": 180},
+    {"id": "readme-spec-kit", "mode": "claude-code", "url": "https://raw.githubusercontent.com/github/spec-kit/main/README.md", "review_days": 180},
+    {"id": "readme-openspec", "mode": "claude-code", "url": "https://raw.githubusercontent.com/Fission-AI/OpenSpec/main/README.md", "review_days": 180}
+  ]
+}

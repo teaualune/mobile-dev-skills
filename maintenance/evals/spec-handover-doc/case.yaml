@@ -1,0 +1,15 @@
+schema_version: "1.0"
+name: spec-handover-doc
+context:
+  scaffold_script: flutter-app.sh
+graders:
+  - name: fired
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:mobile-dev-skills:)?feature-spec"'
+  - name: no-other-plugin-skill
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:mobile-dev-skills:)?(?:feature-intake|feature-verify|mobile-build-deploy|feature-workflow|feature-scaffold|feature-spec-compact|mobile-store-deploy)"'
+    min: 0
+    max: 0

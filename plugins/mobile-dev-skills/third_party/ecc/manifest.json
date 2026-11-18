@@ -1,0 +1,151 @@
+{
+  "_doc": "One entry per file vendored from ECC or substantially derived from it. upstream_commit + upstream_path pin the merge base for the maintainer's ecc mode; modifications record local intent so a later sync can tell it from upstream change. Each local_path carries the notice comments in its frontmatter, ending in '@ <first 7 characters of upstream_commit>'. upstream_body_sha256 is the sha256 of the upstream file's body (everything after its frontmatter); the local body minus its '## Inputs from feature-workflow' section must hash to it. The plugin repository's CLAUDE.md, 'Vendored ECC agents', holds the rules.",
+  "upstream": {
+    "repo": "https://github.com/affaan-m/ECC",
+    "license": "MIT",
+    "copyright": "Copyright (c) 2026 Affaan Mustafa"
+  },
+  "files": [
+    {
+      "local_path": "agents/flutter-reviewer.md",
+      "upstream_path": "agents/flutter-reviewer.md",
+      "upstream_commit": "c05b2d6614f62f6db0047669aa4eefb223d478f9",
+      "upstream_tag": "v2.2.3",
+      "upstream_body_sha256": "1da5b98cfbcc878f3bff065e4d8498ad2ef0d8ae2ba5bc4a35cdacffd3206eec",
+      "last_reviewed": "2026-11-16",
+      "modifications": [
+        { "what": "Removed `model: sonnet`", "why": "Quality first: the agent follows the calling step's `model`, then `CLAUDE_CODE_SUBAGENT_MODEL`, then the main model; `inherit` would skip the environment variable" },
+        { "what": "Rewrote `description` as workflow-internal", "why": "Agent descriptions are listed on every turn wherever the plugin is enabled; a short one that names Step 2.4 keeps the cost low and stops delegation outside the workflow" },
+        { "what": "Added the SPDX, copyright and derivation comments to the frontmatter", "why": "MIT notice that travels with manual copies and stays out of the prompt" },
+        { "what": "Added `## Inputs from feature-workflow`: the project root, spec path, requirement ids and scenarios, a bug fix's, refactor's or missing-tests run's change record or plan, the run's files, the Conventions Report, the standards files' paths and the Flutter/Dart command", "why": "ECC agents don't know this workflow's context; the file list also covers new untracked files, which `git diff` misses" },
+        { "what": "Inputs section: report a CRITICAL security issue and name `security-reviewer` instead of handing off", "why": "The agent has no Agent tool; Step 2.4 decides when the security pass runs" },
+        { "what": "Inputs section: name the spec, convention or standard a finding goes against, and report it anyway", "why": "Step 2.4's precedence rule settles conflicts; the independent view is the point" },
+        { "what": "Inputs section: the `flutter-dart-code-review` skill it names isn't installed", "why": "Not vendored; stops a search for a skill that isn't there" }
+      ]
+    },
+    {
+      "local_path": "agents/security-reviewer.md",
+      "upstream_path": "agents/security-reviewer.md",
+      "upstream_commit": "c05b2d6614f62f6db0047669aa4eefb223d478f9",
+      "upstream_tag": "v2.2.3",
+      "upstream_body_sha256": "60d1e2721740661d7715adc56f55bee310bd3ff1cdf2fdf9d110e539ddb28889",
+      "last_reviewed": "2026-11-16",
+      "modifications": [
+        { "what": "Removed `model: sonnet`", "why": "Quality first: the agent follows the calling step's `model`, then `CLAUDE_CODE_SUBAGENT_MODEL`, then the main model; `inherit` would skip the environment variable" },
+        { "what": "Rewrote `description` as workflow-internal, without \"Use PROACTIVELY\"", "why": "Agent descriptions are listed on every turn wherever the plugin is enabled; proactive wording would delegate outside feature-workflow Step 2.4" },
+        { "what": "Added the SPDX, copyright and derivation comments to the frontmatter", "why": "MIT notice that travels with manual copies and stays out of the prompt" },
+        { "what": "Added `## Inputs from feature-workflow`: the project root, spec path, requirement ids and scenarios, a bug fix's, refactor's or missing-tests run's change record or plan, the run's files and the areas they touch, the Conventions Report, the standards files' paths, and the platform with its command", "why": "ECC agents don't know this workflow's context; the file list also covers new untracked files, which `git diff` misses" },
+        { "what": "Inputs section: run an Analysis Command only for an ecosystem the project has, and apply the checks to the platform's language and to its platform and build configuration", "why": "The upstream commands are npm-only and fail in a project without npm; the agent serves every platform adapter, and the criteria themselves stay as written" },
+        { "what": "Inputs section: report only, in a stated finding format with severities", "why": "Upstream has no output format; Step 2.4 settles each finding by severity and fixes it itself" },
+        { "what": "Inputs section: name the spec, convention or standard a finding goes against, and report it anyway", "why": "Step 2.4's precedence rule settles conflicts; the independent view is the point" },
+        { "what": "Inputs section: the `security-review` skill it names isn't installed", "why": "Not vendored; stops a search for a skill that isn't there" }
+      ]
+    },
+    {
+      "local_path": "agents/dart-build-resolver.md",
+      "upstream_path": "agents/dart-build-resolver.md",
+      "upstream_commit": "c05b2d6614f62f6db0047669aa4eefb223d478f9",
+      "upstream_tag": "v2.2.3",
+      "upstream_body_sha256": "613c7cfd95abe0e4718e32fd818d7cbf7fda630b5254f11acdaf66fa046695b1",
+      "last_reviewed": "2026-11-16",
+      "modifications": [
+        { "what": "Removed `model: sonnet`", "why": "Quality first: the agent follows the calling step's `model`, then `CLAUDE_CODE_SUBAGENT_MODEL`, then the main model; `inherit` would skip the environment variable" },
+        { "what": "Rewrote `description` as workflow-internal", "why": "Agent descriptions are listed on every turn wherever the plugin is enabled; a short one that names Step 2.3 keeps the cost low and stops delegation outside the workflow" },
+        { "what": "Added the SPDX, copyright and derivation comments to the frontmatter", "why": "MIT notice that travels with manual copies and stays out of the prompt" },
+        { "what": "Added `## Inputs from feature-workflow`: the project root, the failing check, its command, output and the fixes tried, the Flutter/Dart command, the run's files, the spec path, the Conventions Report and the standards files' paths", "why": "ECC agents don't know this workflow's context" },
+        { "what": "Inputs section: follow the Conventions Report and the standards files, a project rule winning over a bundled one, even where the fix tables suggest `!`", "why": "The Flutter standards forbid `!` in hand-written code unless the project's own standards replace that rule; a fix that breaks them would only come back as a review finding" },
+        { "what": "Inputs section: every Flutter and Dart command uses the given command; with none given, stop", "why": "Upstream doesn't know fvm; the plugin's fvm rule decides the command (the Flutter adapter's \"Commands\")" },
+        { "what": "Inputs section: start from the failing command; builds, `flutter clean`, `pod` commands and cache repairs only for a build failure", "why": "Step 2.3 has no build check, and a full build costs minutes" },
+        { "what": "Inputs section: edit only the run's files; a fix elsewhere, including any dependency change, is a proposal", "why": "Step 2.3 fixes within the run's files, and the scaffold's Hard rules need the user's approval for a new dependency" },
+        { "what": "Inputs section: no suppression is approved", "why": "Step 2.3 never weakens a check; upstream allows `// ignore` with approval, which nobody can give inside the agent" },
+        { "what": "Inputs section: don't change behavior the spec states, and report renamed or moved symbols and test descriptions", "why": "The approved spec is the contract, and the caller updates its anchors" },
+        { "what": "Inputs section: the `flutter-dart-code-review` skill it names isn't installed", "why": "Not vendored; stops a search for a skill that isn't there" }
+      ]
+    },
+    {
+      "local_path": "agents/swift-reviewer.md",
+      "upstream_path": "agents/swift-reviewer.md",
+      "upstream_commit": "c05b2d6614f62f6db0047669aa4eefb223d478f9",
+      "upstream_tag": "v2.2.3",
+      "upstream_body_sha256": "52b8bc3dcd7bd854403217ef573ca84f62c1497dcdc06b8a383ea77a76fe4e01",
+      "last_reviewed": "2026-11-16",
+      "modifications": [
+        { "what": "Removed `model: sonnet`", "why": "Quality first: the agent follows the calling step's `model`, then `CLAUDE_CODE_SUBAGENT_MODEL`, then the main model; `inherit` would skip the environment variable" },
+        { "what": "Rewrote `description` as workflow-internal, without \"MUST BE USED\"", "why": "Agent descriptions are listed on every turn wherever the plugin is enabled; the upstream wording would delegate every Swift change, inside the workflow or not" },
+        { "what": "Added the SPDX, copyright and derivation comments to the frontmatter", "why": "MIT notice that travels with manual copies and stays out of the prompt" },
+        { "what": "Added `## Inputs from feature-workflow`: the project root, spec path, requirement ids and scenarios, a bug fix's, refactor's or missing-tests run's change record or plan, the files to review, the Conventions Report, the standards files' paths, and the platform with its command", "why": "ECC agents don't know this workflow's context; the file list also covers new untracked files, which `git diff` misses" },
+        { "what": "Inputs section: skip the build, lint and test commands and the `git diff HEAD~1` step; run commands only to read code", "why": "Step 2.4 runs after a passing verification run, and `swift build` / `swift test` don't build an iOS app target" },
+        { "what": "Inputs section: in a Flutter project's `ios/` folder, judge channel and plugin code by the priorities, without SwiftUI view patterns, and leave generated and Objective-C files out", "why": "The agent is also the native reviewer for Flutter's iOS code (\"Native adapter for: ios\"); Pigeon's generated Swift uses `as!`, which upstream rates CRITICAL" },
+        { "what": "Inputs section: a SwiftUI control's `Task { await viewModel.… }` action isn't an unstructured-task finding", "why": "It is the standard bridge from a synchronous action to async work; upstream's HIGH rule would make every screen's Retry button a question for the user in Step 2.4" },
+        { "what": "Inputs section: report only, in a stated finding format with severities and a `Verdict:` closing line", "why": "Upstream has no output format; Step 2.4 settles each finding by severity and quotes the closing line the adapter's \"Agents\" names" },
+        { "what": "Inputs section: say that `security-reviewer` should look at a CRITICAL security issue", "why": "The agent has no Agent tool; Step 2.4 decides when the security pass runs" },
+        { "what": "Inputs section: name the spec, convention or standard a finding goes against, and report it anyway", "why": "Step 2.4's precedence rule settles conflicts; the independent view is the point" },
+        { "what": "Inputs section: the rules and skills it names aren't installed", "why": "Not vendored; stops a search for files that aren't there" }
+      ]
+    },
+    {
+      "local_path": "agents/swift-build-resolver.md",
+      "upstream_path": "agents/swift-build-resolver.md",
+      "upstream_commit": "c05b2d6614f62f6db0047669aa4eefb223d478f9",
+      "upstream_tag": "v2.2.3",
+      "upstream_body_sha256": "b7c60a88efbe34c1197ec4a75ef60de0c50a246125f70c2d2c71ce4e521e22ce",
+      "last_reviewed": "2026-11-16",
+      "modifications": [
+        { "what": "Removed `model: sonnet`", "why": "Quality first: the agent follows the calling step's `model`, then `CLAUDE_CODE_SUBAGENT_MODEL`, then the main model; `inherit` would skip the environment variable" },
+        { "what": "Rewrote `description` as workflow-internal", "why": "Agent descriptions are listed on every turn wherever the plugin is enabled; a short one that names Step 2.3 keeps the cost low and stops delegation outside the workflow" },
+        { "what": "Added the SPDX, copyright and derivation comments to the frontmatter", "why": "MIT notice that travels with manual copies and stays out of the prompt" },
+        { "what": "Added `## Inputs from feature-workflow`: the project root, the failing check, its command, output and the fixes tried, the platform's command, the run's files, the spec path, the Conventions Report and the standards files' paths", "why": "ECC agents don't know this workflow's context" },
+        { "what": "Inputs section: start from the failing command; `swift build`, `swift test` and `swift package` only for a Swift package with its own `Package.swift`, and every `xcodebuild` command with the given project, scheme and destination; with no command given, stop", "why": "Upstream's first command is `swift build`, which doesn't build an iOS app target; the adapter's command rule decides the scheme and the simulator" },
+        { "what": "Inputs section: follow the Conventions Report and the standards files, a project rule winning over a bundled one", "why": "A fix that breaks them would only come back as a review finding" },
+        { "what": "Inputs section: edit only the run's files; a fix elsewhere, including the project file, packages and signing, is a proposal, except the project file entries the run itself made", "why": "Step 2.3 fixes within the run's files, and a project or dependency change needs the user's approval; a run that registers files or adds an `INFOPLIST_KEY_` setting owns those entries" },
+        { "what": "Inputs section: no suppression is approved", "why": "Step 2.3 never weakens a check; upstream allows `// swiftlint:disable` with approval, which nobody can give inside the agent" },
+        { "what": "Inputs section: don't change behavior the spec states, and report renamed or moved symbols and test descriptions", "why": "The approved spec is the contract, and the caller updates its anchors" },
+        { "what": "Inputs section: the rules and skills it names aren't installed", "why": "Not vendored; stops a search for files that aren't there" }
+      ]
+    },
+    {
+      "local_path": "agents/kotlin-reviewer.md",
+      "upstream_path": "agents/kotlin-reviewer.md",
+      "upstream_commit": "c05b2d6614f62f6db0047669aa4eefb223d478f9",
+      "upstream_tag": "v2.2.3",
+      "upstream_body_sha256": "97b0a0761787cd9cff8b5151579036c7c7fa519e7ebc38268a1919cb8174c24e",
+      "last_reviewed": "2026-11-18",
+      "modifications": [
+        { "what": "Removed `model: sonnet`", "why": "Quality first: the agent follows the calling step's `model`, then `CLAUDE_CODE_SUBAGENT_MODEL`, then the main model; `inherit` would skip the environment variable" },
+        { "what": "Rewrote `description` as workflow-internal", "why": "Agent descriptions are listed on every turn wherever the plugin is enabled; the upstream wording would delegate every Kotlin review, inside the workflow or not" },
+        { "what": "Added the SPDX, copyright and derivation comments to the frontmatter", "why": "MIT notice that travels with manual copies and stays out of the prompt" },
+        { "what": "Added `## Inputs from feature-workflow`: the project root, spec path, requirement ids and scenarios, a bug fix's, refactor's or missing-tests run's change record or plan, the files to review, the Conventions Report, the standards files' paths, and the platform with its command", "why": "ECC agents don't know this workflow's context; the file list also covers new untracked files, which `git diff` misses" },
+        { "what": "Inputs section: skip the git diff step; run commands only to read code, never to build, lint or test", "why": "Step 2.4 runs after a passing verification run, which has built the code, run lint and run the tests" },
+        { "what": "Inputs section: judge the Architecture items by the layers the Conventions Report names", "why": "Upstream rates logic outside use cases CRITICAL, which would turn every ViewModel of a project without a domain layer, the adapter's fallback included, into a question for the user" },
+        { "what": "Inputs section: an inline lambda or an unstable parameter alone isn't a finding from Kotlin 2.0.20, under strong skipping", "why": "Strong skipping, on by default from Kotlin 2.0.20, remembers lambdas and skips on instance equality; upstream's HIGH rules predate it and would flag every screen's callbacks" },
+        { "what": "Inputs section: a main-safe Retrofit or Room `suspend` call without `withContext`, and a plain `@Serializable` class without `@Keep` or ProGuard rules, aren't findings by themselves", "why": "Upstream's HIGH IO rule and MEDIUM ProGuard rule would fire on every repository and DTO the adapter's fallback stack writes, turning correct code into a fix or a user question in every Step 2.4" },
+        { "what": "Inputs section: in a Flutter project's `android/` folder, judge channel and plugin code by the Kotlin, coroutine, Android and security items, and leave generated and Java files out", "why": "The agent is also the native reviewer for Flutter's Android code (\"Native adapter for: android\"), where Compose and module architecture don't apply" },
+        { "what": "Inputs section: report only, with the output and summary formats and the `Verdict:` line last", "why": "Step 2.4 settles each finding by severity and quotes the closing line the adapter's \"Agents\" names" },
+        { "what": "Inputs section: report a CRITICAL security issue and name `security-reviewer` instead of stopping to hand off", "why": "The agent has no Agent tool; Step 2.4 decides when the security pass runs" },
+        { "what": "Inputs section: name the spec, convention or standard a finding goes against, and report it anyway", "why": "Step 2.4's precedence rule settles conflicts; the independent view is the point" },
+        { "what": "Inputs section: the security guidance and skills it names aren't installed", "why": "Not vendored; stops a search for files that aren't there" }
+      ]
+    },
+    {
+      "local_path": "agents/kotlin-build-resolver.md",
+      "upstream_path": "agents/kotlin-build-resolver.md",
+      "upstream_commit": "c05b2d6614f62f6db0047669aa4eefb223d478f9",
+      "upstream_tag": "v2.2.3",
+      "upstream_body_sha256": "292776c40ec72ed7d704ab4eff4e2a12f78e6ffcb9222481a60318c95d2917ed",
+      "last_reviewed": "2026-11-18",
+      "modifications": [
+        { "what": "Removed `model: sonnet`", "why": "Quality first: the agent follows the calling step's `model`, then `CLAUDE_CODE_SUBAGENT_MODEL`, then the main model; `inherit` would skip the environment variable" },
+        { "what": "Rewrote `description` as workflow-internal", "why": "Agent descriptions are listed on every turn wherever the plugin is enabled; a short one that names Step 2.3 keeps the cost low and stops delegation outside the workflow" },
+        { "what": "Added the SPDX, copyright and derivation comments to the frontmatter", "why": "MIT notice that travels with manual copies and stays out of the prompt" },
+        { "what": "Added `## Inputs from feature-workflow`: the project root, the failing check, its command, output and the fixes tried, the platform's command, the run's files, the spec path, the Conventions Report and the standards files' paths", "why": "ECC agents don't know this workflow's context" },
+        { "what": "Inputs section: start from the failing command, with the given module and variant rather than `./gradlew build`, and variant configurations for `dependencies` and `dependencyInsight`; in a Flutter project through `android/`'s wrapper; with no command given, stop", "why": "A full build compiles every variant and runs every check, which costs minutes; the adapter's command rule decides the module and variant" },
+        { "what": "Inputs section: leave the caches alone unless the output shows a stale or corrupt one", "why": "Refreshing dependencies or deleting caches costs a full download and rarely fixes a compile error" },
+        { "what": "Inputs section: follow the Conventions Report and the standards files, a project rule winning over a bundled one, and never an `else` on a sealed `when`", "why": "A fix that breaks them would only come back as a review finding; upstream's fix table offers `else`, which the Compose standards forbid" },
+        { "what": "Inputs section: edit only the run's files; a fix in a build file, the version catalog or other project configuration is a proposal, except the entries the run itself made", "why": "Step 2.3 fixes within the run's files, and a dependency or build change needs the user's approval; a run that adds an approved dependency owns that entry" },
+        { "what": "Inputs section: no suppression is approved", "why": "Step 2.3 never weakens a check; upstream allows suppressing warnings with approval, which nobody can give inside the agent" },
+        { "what": "Inputs section: don't change behavior the spec states, and report renamed or moved symbols and test descriptions", "why": "The approved spec is the contract, and the caller updates its anchors" },
+        { "what": "Inputs section: the skill it names isn't installed", "why": "Not vendored; stops a search for a skill that isn't there" }
+      ]
+    }
+  ]
+}

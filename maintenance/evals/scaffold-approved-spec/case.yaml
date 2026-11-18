@@ -1,0 +1,15 @@
+schema_version: "1.0"
+name: scaffold-approved-spec
+context:
+  scaffold_script: flutter-app.sh
+graders:
+  - name: fired
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:mobile-dev-skills:)?feature-scaffold"'
+  - name: no-workflow
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:mobile-dev-skills:)?feature-workflow"'
+    min: 0
+    max: 0

@@ -1,0 +1,18 @@
+{
+  "_doc": "Maintainer run state; the skill updates it at the end of a run, the scripts only read it. feeds.<id>.value = last reviewed version (or fingerprint); pages.<id>.reviewed = YYYY-MM-DD; contracts.last_audited_commit = the HEAD the last contracts audit covered; contracts.known_warnings = WARN lines the owner rejected, deferred or noted (check_contracts.py prints them as KNOWN); pending_dry_runs = accepted 'needs dry run' changes awaiting the owner's dry run. A missing entry means 'never reviewed'.",
+  "contracts": {
+    "last_audited_commit": null,
+    "last_audited": null,
+    "known_warnings": []
+  },
+  "pending_dry_runs": [],
+  "feeds": {
+    "ecc": {
+      "value": "v2.2.3",
+      "commit": "c05b2d6614f62f6db0047669aa4eefb223d478f9",
+      "checked": "2026-11-15",
+      "note": "The three agents in third_party/ecc/manifest.json were vendored at this commit (2026-11-16)."
+    }
+  },
+  "pages": {}
+}
