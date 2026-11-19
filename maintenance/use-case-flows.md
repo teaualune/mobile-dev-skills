@@ -1554,7 +1554,7 @@ flowchart TD
   I17{"Invoked by feature-workflow?"}:::decision
   I18("Back to feature-workflow: Step 1.4 before the spec - UC-1"):::done
   I19{"Figma frame links given?"}:::decision
-  I20{"No tool reads Figma, Claude-in-Chrome tools there, figma-design-to-artifact listed?"}:::decision
+  I20{"figma-design-to-artifact listed?"}:::decision
   I21(["Offer: export the frames with figma-design-to-artifact?"]):::user
   I22[["figma-design-to-artifact, sibling plugin"]]:::skill
   I23[("figma/ in the feature's state folder, Figma references name the exports beside the links")]:::state
@@ -1594,7 +1594,7 @@ flowchart TD
 - `feature-workflow`'s description sends requests that don't name it here; it starts only when named or delegated (`feature-workflow` frontmatter and intro).
 - A sheet with a `> Spec:` or `> Split:` first line is finished: a later change starts a new sheet in its place (`feature-intake` "Saving the sheet").
 - When `feature-workflow` invokes intake, it is Step 1.3: the finished sheet goes back to the orchestrator, never straight to `feature-spec`, since Step 1.4 comes before the spec (`feature-intake` "When intake is done"; `feature-workflow` "Step 1.3").
-- The Figma export is offered only when no tool in the session reads Figma files directly, the Claude-in-Chrome tools are there and a `figma-design-to-artifact` skill is listed, and it runs only after the user's yes; without that skill nothing is said and the links stay as given. The same offer comes up when intake runs inside the workflow (`feature-intake` "General rules during intake", Figma last; `feature-workflow` "State files").
+- The Figma export is tried first when a `figma-design-to-artifact` skill is listed, and runs only after the user's yes; when the skill isn't listed or its run fails, a Figma tool that works in the session reads the links, and if none does, the caller is asked how to go on. The same offer comes up when intake runs inside the workflow (`feature-intake` "General rules during intake", Figma last; `feature-workflow` "State files").
 
 ### UC-19 — `feature-spec` on its own
 

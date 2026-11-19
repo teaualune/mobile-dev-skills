@@ -18,6 +18,7 @@ Rules for the code and tests the feature workflow writes, on every platform. The
   - The repository is a stub implementing the same interface and returning hardcoded sample data after a simulated network delay (the platform's standards give its form). Name it `StubExampleRepository`, and place it next to the real repository file (`example_repository.dart` → `example_repository_stub.dart`) or in the project's `stubs/` folder if it has one.
   - Whatever provides the repository is wired to the stub, with a `// TODO(api): swap to real repository when backend is ready` comment above it.
   - A provisional field on a confirmed entity, for an endpoint that already exists, gets the `// TODO(api): provisional — confirm with backend` comment on that field and its mapping only. There is no stub: the real repository stays wired.
+  - An endpoint the backend has built but not deployed keeps the real repository, tested with fakes, with no stub. Its spec item gates the release until an integration test or a recorded live check ends the provisional state.
 - **Native code behind an interface.** Shared code reaches each native interface of the spec's section 4, and each permission request in its permissions table, through one class, provided the way the project provides its repositories, so tests can fake it, a denial included. Native code does only what section 4 states.
 
 ## Tests

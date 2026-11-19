@@ -115,11 +115,11 @@ Then go on with the matching section below.
 - **Don't invent — with one exception.** If the user says "the API returns user data" without specifying fields, ask. Never guess `{id, name, email}` and move on. **Exception:** if the user explicitly tells you the backend API isn't ready yet but the UI work needs to proceed, you may propose a provisional entity shape. Treat this as a collaborative sketch, not a unilateral decision:
   1. Propose the shape with brief reasoning ("Based on the screen needing a title, body, and timestamp, I'd suggest `Article { id, title, body, publishedAt }` — does that match what you expect from the backend?").
   2. Ask the user to sanity-check it before treating it as decided.
-  3. Mark the entity in the Intake Sheet as `PROVISIONAL`, or, for a new field on an existing entity, only that field, so the spec and scaffold steps know to add TODO comments and, for an endpoint that doesn't exist yet, use a stub repository.
+  3. Mark the entity in the Intake Sheet as `PROVISIONAL`, or, for a new field on an existing entity, only that field, so the spec and scaffold steps know to add TODO comments and, for an endpoint that doesn't exist yet, use a stub repository (an endpoint built but not deployed keeps its real one, as `feature-spec` says).
   4. Add the provisional shape to a tracked list of "things to confirm with backend later".
 
   Shapes taken from another part's spec that isn't approved yet (a delegation brief's `draft` API contract) are `PROVISIONAL` the same way, copied from that spec rather than proposed.
-- **Figma last, unless the user leads with it.** Visual details are easier once the data shape is clear. When the user gives Figma frame links, no tool in the session reads Figma files directly (a Figma MCP server, for one) but the Claude-in-Chrome tools are there, and a `figma-design-to-artifact` skill is listed, offer to export the frames with it into `.mobile-dev-skills/<feature-slug>/figma/`; the Figma references then name the exported files beside the links.
+- **Figma last, unless the user leads with it.** Visual details are easier once the data shape is clear. When the user gives Figma frame links and a `figma-design-to-artifact` skill is listed, try it first: with the user's yes, export the frames with it into `.mobile-dev-skills/<feature-slug>/figma/`, and the Figma references then name the exported files beside the links. If the skill isn't listed, or its run fails, read the links with a Figma tool that works in the session, if one does. If none does, ask the caller how to go on: the user in a direct intake, or `feature-workflow`'s question to the user in a run. Never drop the links silently.
 
 ### Non-functional topics
 

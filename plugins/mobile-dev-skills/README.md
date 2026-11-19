@@ -308,13 +308,13 @@ Parts: `backend/` (specs in `backend/docs/specs/`), `web/` (`web/docs/specs/`) a
 
 ## Related plugins
 
-Four plugins by the same author, from two marketplaces of their own (`mobile-handytool-skills` and `mobile-compat`), cover what this one leaves out. A skill here offers its sibling only when that skill is listed in the session. When it isn't, the crash and submission mentions name the plugin once, with its install commands; the Figma mention says nothing.
+Four plugins by the same author, from two marketplaces of their own (`mobile-handytool-skills` and `mobile-compat`), cover what this one leaves out. A skill here offers its sibling only when that skill is listed in the session. When it isn't, the crash and submission mentions name the plugin once, with its install commands; the Figma mention tries its skill first and otherwise falls back as its intake rule says.
 
 | Plugin | Repository | What it does | Where this plugin points to it |
 |---|---|---|---|
 | `crash-issue-fixer` | `teaualune/mobile-handytool-skills` | Crash, non-fatal and ANR reports from Crashlytics or any crash reporter: whether a crash still happens, its cause, and a fix after approval | `feature-workflow`'s bug fix, for a crash report without steps |
 | `store-submission-prep` | `teaualune/mobile-handytool-skills` | A prefilled App Store Connect and Play Console submission sheet, with store copy for every listing language | `mobile-store-deploy`, after an upload or for the submission itself |
-| `figma-design-to-artifact` | `teaualune/mobile-handytool-skills` | Figma frames exported through Chrome as reference code or a layer tree, with 2x screenshots | `feature-intake`, for Figma links when Chrome is there and no Figma tool is |
+| `figma-design-to-artifact` | `teaualune/mobile-handytool-skills` | Figma frames exported through Chrome as reference code or a layer tree, with 2x screenshots | `feature-intake`, for Figma links, tried first when listed (on the user's yes) |
 | `iphone-duo-ui-fix` | `teaualune/mobile-compat-skills` | An existing iOS or Flutter app's layout fixed for iPhone Duo's inner and outer displays | — |
 
 ```

@@ -303,6 +303,8 @@ If the feature is genuinely small (e.g. "add a toggle to settings that calls one
 - **A bug fix** (`feature-workflow`) corrects the scenario the bug shows to be vague or wrong, in its block under the same id, or adds one for a case no scenario covered, under its requirement or a new one with the next id. When a scenario already states the right behavior, its text stays as it is. Either way it adds its change record (below).
 - **A refactor** (`feature-workflow`) changes only the sections that describe the code it moves (section 4's repository or native interfaces, section 5's state primitives, section 2's routing wiring, and section 10's Test plan where its pin tests make it untrue) and nothing in section 6, then adds its change record.
 
+- **A sub-feature of a Large change** (`feature-workflow` Step 1.1) changes the blocks of this spec that its own screens affect: those blocks are edited in place under the same ids, each with a pointer line to the sub-feature's spec, every changed scenario's anchors reset to `(filled in Phase 2)`, the TBDs the block still holds kept in this spec, and a changelog entry here. This spec's index row goes to `draft`.
+
 ## Change records
 
 `feature-workflow`'s bug fixes and refactors record why the spec changed, next to the change, as one blockquote:
@@ -351,6 +353,8 @@ If the user has told you the backend isn't built yet and they want to proceed wi
 - The field is marked `PROVISIONAL` in its entity's sketch and in the request or response shape, and one line under that entity names its provisional fields and their source.
 - The field goes in section 8's `### Provisional shapes` list.
 - The repository stays the real one, with no stub. What it sends until the backend accepts the field (the field left out, or sent anyway) is the user's answer, or a section 8 TBD.
+
+**An endpoint the backend has built but not deployed** (its branch or staging has it; the server the app calls doesn't yet) is provisional too, but keeps everything real: its path stays in the API endpoints table with `PROVISIONAL` beside it, its entity's note names the source, its repository is the real one tested with fakes (no stub), and section 8's `### Provisional shapes` list gets an item that gates the release on the deployment. The provisional state ends when an integration test runs against the deployed endpoint, or a live check is done by hand and recorded: the item is then ticked with that test's name or the check's date, and the path loses `PROVISIONAL`.
 
 This distinction matters: a TBD blocks progress until resolved. A provisional shape unblocks UI work today but creates a debt that must be paid before launch. Both need to be tracked, but differently.
 

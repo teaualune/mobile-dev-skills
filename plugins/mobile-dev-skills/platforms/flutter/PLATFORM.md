@@ -137,7 +137,7 @@ ARB→Dart is Flutter's `gen-l10n` (configured in `l10n.yaml`), not a `build_run
 
 - **A layer's tests**, as they are written: `<flutter> test <file>`. A native unit test runs with its native adapter's command ("Native interop").
 - **Test-name search** (`feature-verify`, a baseline): `grep -F -e "'<description>'" -e '"<description>"' <file>`. A description is one whole string literal. An anchor under `ios/` or `android/` is a native unit test: search it with its native adapter's command.
-- **Anchored tests** (`feature-verify`): `<flutter> test --reporter expanded --concurrency=1 <files>`, one file at a time, since files run in parallel can leave some of a file's tests out of the expanded output. Each test prints on its own line with its description and its result; a test run with a `variant` prints ` (variant: …)` after its description. Anchored native unit tests run with their native adapter's command ("Native interop").
+- **Anchored tests** (`feature-verify`): `<flutter> test --reporter expanded --concurrency=1 <files>`, all the anchored files in one command: `--concurrency=1` keeps every test of every file in the expanded output, where files run in parallel can leave some out. Each test prints on its own line with its description and its result; a test run with a `variant` prints ` (variant: …)` after its description. Anchored native unit tests run with their native adapter's command ("Native interop").
 - **A new golden image:** `<flutter> test --update-goldens --plain-name '<description>' <file>`.
 - **Device tests:** `<flutter> test integration_test/<file>`, run by hand.
 
