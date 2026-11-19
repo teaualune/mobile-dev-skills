@@ -109,7 +109,7 @@ Exit 4 ⇒ invalid config: fix and re-validate. `SERVICE_ACCOUNT_KEY_ERROR` ⇒ 
 1. **Fail loud.** Any ambiguity — multiple matching archives/AABs, missing signing config, unexpected wizard/API/page state — means STOP, show the findings, and ask. Never guess a signing identity, team, or version.
 2. **Secrets:** never print key file contents or tokens; reference key files by path only. The scripts already behave this way — do not `cat` key files yourself. Never commit `ios-api-key.json` or a key file, and never pass `--api-key-config` for a file git doesn't ignore.
 3. **Idempotency:** re-running with an already-uploaded build ⇒ surface the store's duplicate error verbatim (ASC: redundant binary / "bundle version must be higher"; Play: "Version code … has already been used"). Never auto-bump versions or rebuild.
-4. **Phase 2 rollout pause:** the final rollout click in Play Console is an irreversible publish — pause and get explicit user confirmation in chat before clicking, **every run**. Phase 1 needs no such pause.
+4. **Phase 2 rollout pause:** the final rollout click in Play Console is an irreversible publish — pause and get explicit user confirmation in chat before clicking, **every run**. That one confirmation also covers the Console's publish dialog the click opens (Phase 2 step 9). Phase 1 needs no such pause.
 5. **No fastlane. No Xcode GUI scripting.** Browser automation only as Android Phase 2.
 6. **Platform scope is exactly what the caller chose** — `ios`, `android`, or `both`. A single-platform run never touches the other platform's config, artifacts, or setup questions. `both` runs the two platforms in parallel (see below).
 7. Every run ends with the summary block from the Output contract section.
@@ -181,9 +181,9 @@ Exit 4 ⇒ invalid config: fix and re-validate. `SERVICE_ACCOUNT_KEY_ERROR` ⇒ 
    6. **Upload the `.aab` — user-assisted whenever it exceeds 10 MB.** `file_upload` is capped at 10 MB per call, so for a normal release bundle the agent cannot attach the file. Stop on the upload screen, give the user the absolute artifact path, and ask them to drag it into the drop zone themselves. Resume once the Console shows the bundle attached. Only attempt `file_upload` directly when the artifact is genuinely under 10 MB **and** its path was shared with the session; never present the hand-off as a failure — it is the documented Phase 2 behavior.
    7. Wait for upload and processing to finish
    8. Skip release notes (leave empty)
-   9. Next → review → **STOP before the final rollout/confirm button. Ask the user in chat to confirm the rollout, and only click after explicit confirmation. Every run, no exceptions.**
+   9. Next → review → **STOP before the final rollout/confirm button. Ask the user in chat to confirm the rollout, and only click after explicit confirmation. Every run, no exceptions.** That button (e.g. "Save and publish") opens the Console's own confirmation dialog (e.g. "Publish changes on Google Play?"), which is part of the same rollout: ask once, before the button, then confirm the dialog without asking again. When the dialog lists more than this release (another track, store listing changes, other pending changes), stop, describe them and ask, since confirming would publish those too.
 
-   Any unexpected page state (error banners, extra dialogs, changed UI) → pause, describe what is on screen, ask.
+   Any other unexpected page state (error banners, extra dialogs beyond step 9's, changed UI) → pause, describe what is on screen, ask.
 
 5. Duplicate version code (HTTP 400 "Version code … has already been used", or the equivalent Console error) → rule 3 (report verbatim, don't bump).
 
@@ -215,7 +215,7 @@ Every step of the manual Organizer flow maps to a script/CLI equivalent. Steps w
 | 5 | "Create new release" | `edits.insert` → editId | Click "Create new release" |
 | 6 | Upload the `.aab` | `edits.bundles.upload` (binary upload, streamed from disk — no size limit) → versionCode | **Partially unmapped.** `file_upload` caps at 10 MB, so a normal release bundle must be dragged in by the user; the agent pauses, supplies the path, and resumes after the Console shows it attached |
 | 7 | Release notes | Omitted — release payload carries no `releaseNotes` field | Leave release notes empty / skip |
-| 8 | Next → review → confirm rollout | `edits.tracks.update` (`status: completed`) + `edits.commit` — no pause; the API commit **is** the confirmation | **PAUSE — every run:** ask the user in chat before clicking the final rollout button; click only after explicit confirmation |
+| 8 | Next → review → confirm rollout | `edits.tracks.update` (`status: completed`) + `edits.commit` — no pause; the API commit **is** the confirmation | **PAUSE — every run:** ask the user in chat before clicking the final rollout button; click only after explicit confirmation, which also covers the Console's publish dialog that follows |
 
 ## One-time Google Play API setup (enables Phase 1)
 
