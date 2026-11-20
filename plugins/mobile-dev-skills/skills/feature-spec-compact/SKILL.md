@@ -45,7 +45,7 @@ While inventorying, classify each record:
 - **Dev-time increment** — a small correction or refinement made while the feature was being built; the intermediate state has no lasting value once folded in.
 - **Version-boundary change** — records what changed between shipped or planned versions of the feature; the history itself likely has lasting value.
 
-The classification is a recommendation to inform Step 2, not a decision.
+The classification is shown in the inventory for information; it doesn't change Step 2's recommendation.
 
 **A change still being built keeps its record.** Find the spec's row in the spec index (`feature-workflow`'s "Spec index" says how). While it says `draft` or `approved`, the newest bug-fix or refactor record belongs to a change not built yet, unless a heading in the feature's run reports quotes its label: `.mobile-dev-skills/<feature-slug>/report.md` (the pre-rename `.flutter-skills/` in a project that has only that folder), which you read and never write. `feature-workflow` resumes an unbuilt change in its mode by its record, and quotes it in the run's report and review. Keep that record exactly where it is, list it in the inventory as kept until the change is built, and compact everything else. Once the row says `implemented`, or the spec has no row, the record is removed or extracted like any other (Step 2).
 
@@ -57,7 +57,7 @@ Before rewriting anything, ask the caller what should happen to the change recor
 2. **Extract to a changelog file** — fold them in, and preserve every removed record in this compaction's changelog file (Step 4).
 3. **Selective** — walk through the inventory together; the caller marks which entries go to the changelog file and which are discarded.
 
-Recommend a default from the Step 1 classification — all dev-time increments → suggest **Discard**; any version-boundary entries present → suggest **Extract** or **Selective** — but the caller decides.
+Recommend **Extract** for every record, dev-time and version-boundary alike: the text is kept, and dropping the changelog later is a manual delete. Suggest **Selective** when the caller wants to choose per entry, and **Discard** only when they say the records have no value. The caller decides.
 
 ### Step 3 — Fold
 
