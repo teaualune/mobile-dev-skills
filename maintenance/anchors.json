@@ -1148,6 +1148,7 @@
           "- **Mismatch** → re-read the manifest file only.",
           "then the sections `## Detected stack`, `## Detected conventions` (`not yet confirmed` until Phase 2) and `## Command`",
           "**After every save, set the spec's index row to `draft`**",
+          "asks once, before the writing starts, whether each edited spec gets a changelog entry",
           "On approval, set the index row to `approved`.",
           "and to leave `intake.md` alone",
           "you add its `> Spec:` line",
@@ -4399,7 +4400,7 @@
           "- **question** — a platform, native or security reviewer finding that contradicts the spec, the Conventions Report or the standards. Ask the user instead of editing; a change they want is a spec change for Step 1.6, or a conventions change. A CRITICAL or HIGH question stays open until the user answers it;",
           "- **declined** — a finding that the code or the spec shows is wrong, quoting the line that shows it. A CRITICAL or HIGH finding is declined only when the user agrees;",
           "- **follow-up** — a second-opinion finding whose fix would touch files outside this run, or add behavior the spec doesn't state. A CRITICAL or HIGH one becomes a follow-up only when the user agrees. In a missing-tests run, any finding whose fix would change the code rather than a test is a follow-up, a bug fix to propose, whatever pass found it.",
-          "- **A fix that adds behavior the spec doesn't state** (a user-visible change no scenario covers, from a review or a diagnosis) is checked against the spec before it lands. A scenario that already says it, or the user's yes, is the ground; without either, the finding is a question for the user, and the fix waits. When it lands, its tests are anchored, or the spec changes first.",
+          "- **A fix that adds behavior the spec doesn't state** (a change to what the user sees, or to when something runs or stops, such as a request, a poll, a retry or a resume, that no scenario covers, from a review or a diagnosis) is checked against the spec before it lands. Each `fixed` finding's line in `### Review` (step 1 below) names the scenario the fix keeps true, as `<id> <title>`, or says `no behavior change`; a fix that adds a guard, a stop or a trigger has to name one. A scenario that already says it, or the user's yes, is the ground; without either, the finding is a question for the user, and the fix waits. When it lands, its tests are anchored, or the spec changes first.",
           "- **Fix, then verify again**, in this order:",
           "1. Write `### Review` with this round's findings and settlements, and untick the Verification task, before you edit any file.",
           "2. Fix by Step 2.3's rules: in this run's files, no weakened check, anchors updated.",
@@ -4492,7 +4493,7 @@
             "- **Section 6 from before the block format** (a bullet list per screen): before applying the change, ask once whether to convert it to blocks, and recommend converting. The conversion is a reformat that changes no behavior, and the user sees it as its own change before the delta goes in. When the user agrees, read `${CLAUDE_SKILL_DIR}/conversion.md` and convert by it, the layout first when the spec's sections aren't the ten. If the user declines, edit in the bullet format.",
             "- **A bug fix** (`feature-workflow`) corrects the scenario the bug shows to be vague or wrong, in its block under the same id, or adds one for a case no scenario covered, under its requirement or a new one with the next id. When a scenario already states the right behavior, its text stays as it is. Either way it adds its change record (below).",
             "- **A refactor** (`feature-workflow`) changes only the sections that describe the code it moves (section 4's repository or native interfaces, section 5's state primitives, section 2's routing wiring, and section 10's Test plan where its pin tests make it untrue) and nothing in section 6, then adds its change record.",
-            "- **A sub-feature of a Large change** (`feature-workflow` Step 1.1) changes the blocks of this spec that its own screens affect: those blocks are edited in place under the same ids, each with a pointer line to the sub-feature's spec, every changed scenario's anchors reset to `(filled in Phase 2)`, the TBDs the block still holds kept in this spec, and a changelog entry here. This spec's index row goes to `draft`."
+            "- **A sub-feature of a Large change** (`feature-workflow` Step 1.1) changes the blocks of this spec that its own screens affect: those blocks are edited in place under the same ids, each with a pointer to the sub-feature's spec (a line, or inline as the project's specs point to each other), every changed scenario's anchors reset to `(filled in Phase 2)`, and the TBDs the block still holds kept in this spec. This spec's index row goes to `draft`. A changelog entry goes here only when the user said yes to it, which `feature-workflow` asks once per sub-feature before the writing starts."
           ]
         },
         {
