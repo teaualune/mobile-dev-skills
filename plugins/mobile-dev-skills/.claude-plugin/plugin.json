@@ -1,7 +1,7 @@
 {
   "name": "mobile-dev-skills",
   "description": "Alpha. Mobile app workflows for Claude Code: two-phase feature development (intake → spec → approval → tested code → verification → review) for Flutter, native SwiftUI and native Jetpack Compose apps, spec maintenance, and build & store deployment (version bump and build for Flutter and native SwiftUI apps → TestFlight / Play internal testing; the store uploader also works for React Native builds).",
-  "version": "0.1.0-alpha.8",
+  "version": "0.1.0-alpha.9",
   "author": {
     "name": "teaualune",
     "email": "teaualune@gmail.com"

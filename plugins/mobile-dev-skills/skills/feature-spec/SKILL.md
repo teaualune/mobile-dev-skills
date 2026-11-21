@@ -332,6 +332,8 @@ The part before the colon is the record's label, which the workflow's task file 
 
 For each unknown, write the explicit string `TBD` in the cell or prose, and add a checkbox in section 8. Never invent values. Never write "probably something like `{id, name}`" — write `TBD` and ask.
 
+A flow, route or refresh path the sheet calls existing (an unlock flow, a pull to refresh, another screen's route) is a claim until the code of the screen that must run it shows the inputs it needs: an id its route or API carries, a trigger the screen has. Check it before writing a scenario on it. One the screen lacks is a `TBD` with a section 8 item and a proposal, never a scenario that assumes it.
+
 ## When the API is explicitly not ready yet
 
 If the user has told you the backend isn't built yet and they want to proceed with provisional shapes (this should already have been flagged during intake), handle it differently from a TBD:

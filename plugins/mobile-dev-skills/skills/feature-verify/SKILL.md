@@ -19,6 +19,8 @@ Resolve paths from the project root, the adapter's Root, and run commands there;
 - **The spec:** a file path, or a feature name to look up in the spec index. Find the index with `grep -rlxF --include='*index.md' '| Feature | Spec | Screens and routes | Status | Last verified |' .` at the project root. With no match, or several, ask.
 - **The command** for the test run: the one the caller passes; else the line under `## Command` in `.mobile-dev-skills/stack.md` (the pre-rename `.flutter-skills/stack.md` in a project that has only that folder) whose inputs (the adapter's "Commands" names them) match this machine, a file you read and never write; else the adapter's command rule, with the option below. A native adapter's command is decided the same way, from its own rule's `## Command` line or its rule, on the container the adapter's **Testing** line names.
 
+- **The run's scope** (only from `feature-workflow`): the ids of the blocks its tasks changed or built, and the files it wrote or edited. Without it, step 6 covers every scenario of the spec.
+
 A section 6 still in the bullet format has no anchors to check: say so, mention that `feature-spec` can convert it, and stop.
 
 ## The check
@@ -33,7 +35,8 @@ A section 6 still in the bullet format has no anchors to check: say so, mention 
    - `manual — <reason>` — no finding; it goes on the manual list;
    - `none`, `none — <reason>` (a test the user skipped: quote the reason; only a test closes the finding) or `(filled in Phase 2)` — `no test`.
 4. **Run the tests.** Always run the anchored test files yourself, in one command: the anchored-test command in the adapter's "Commands". Native unit tests run in one more command per platform: its native adapter's anchored-test command. Each anchored description must show in the output as a test of its own that passed. One that fails, is skipped, or sits in a file that doesn't load is `failing`. One missing from the output of a run of several files is run again with its file alone, by the same command; one that still never ran is `test missing`. Reading a test never shows that it passes: without this command's output there is no pass. When a native adapter's command rule stops on this machine (no Xcode, no JDK, say), its anchored tests aren't run: each goes on the report's `Not run:` line, not as a finding.
-5. **Unspecified behavior.** Read only the files the `enforced` anchors name, and section 6 in full. List any user action, request, navigation or side effect in those files that no block's statement or THEN/AND line covers; when unsure, leave it out. These are not findings: the user decides whether each belongs in the spec or out of the code. A THEN or AND line of an enforced scenario that the code does the opposite of is listed the same way, as `contradicted: <scenario id> <line>`, and proposes a spec change; no test may pass by asserting the opposite.
+5. **Unspecified behavior.** Read only the files the `enforced` anchors name, and section 6 in full. List any user action, request, navigation or side effect in those files that no block's statement or THEN/AND line covers; when unsure, leave it out. These are not findings: the user decides whether each belongs in the spec or out of the code.
+6. **Contradicted lines**, a step of its own, never folded into step 5. For each scenario of the blocks in the run's scope (every scenario without one), read each THEN and AND line against the code: the files the block's `enforced` anchors name, and the run's files. A line the code does the opposite of (it hides what the line shows, shows something else, or never does what it says) is listed as `contradicted: <scenario id> <line>` with the `path#Symbol` that shows it, and proposes a spec change. It isn't a finding: the user decides. No test may pass by asserting the opposite. List a line only when you can name that code; `Contradicted: none` on the report is a claim that the lines were read.
 
 ## The report
 
@@ -46,6 +49,7 @@ Findings:
 - <id> [<scenario title>] — <kind>: <the anchor, and what was found instead>
 Not run: <id> [<scenario title>] — <why>, or none
 Unspecified behavior: <path#Symbol — what it does>, or none
+Contradicted: <id> [<scenario title>] — <the line>: <the path#Symbol that does otherwise>, or none
 Manual scenarios: <id + title — reason>, or none
 ```
 
