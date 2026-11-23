@@ -42,6 +42,8 @@ The build script lives **in the target project**, not in this skill: it edits th
 
 An existing script: check it against the adapter's "Older scripts", when it has them, before relying on the next sections.
 
+A script that is neither the template nor a copy "Older scripts" lists (one the project wrote before this plugin) isn't passed this skill's flags as they are. Read its usage (`--help`, its top comment or its argument parsing), map the inputs below to the flags it takes and the artifact manifest to the keys it writes, and say the mapping in one line; never pass a flag its usage doesn't list, since an `Unknown argument` exit means this step was skipped. When an input has no flag or the manifest has no path key, ask: run the script as the user directs, or replace it with the template, carrying its values into the ADAPT block. A script that hardcodes the command the adapter's "Command" decides runs as it is when that command equals the decided one, with the header check skipped, as "Older scripts" allows; when they differ, stop. Offer the template's update either way, and never edit a script the user declined to update.
+
 ## Usage keys the specs declare
 
 The feature workflow's specs list each iOS permission in section 4's `### Permissions & capabilities` table, and its Phase 2 adds each new usage key (`…UsageDescription`) to the script's `REQUIRED_USAGE_KEYS`. Before every iOS build, check that nothing slipped past it:

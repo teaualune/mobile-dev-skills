@@ -334,6 +334,8 @@ For each unknown, write the explicit string `TBD` in the cell or prose, and add 
 
 A flow, route or refresh path the sheet calls existing (an unlock flow, a pull to refresh, another screen's route) is a claim until the code of the screen that must run it shows the inputs it needs: an id its route or API carries, a trigger the screen has. Check it before writing a scenario on it. One the screen lacks is a `TBD` with a section 8 item and a proposal, never a scenario that assumes it.
 
+A capability the sheet or the spec relies on in an existing widget or component (a retry button, a callback, a parameter) is a claim in the same way until that component's code shows it. Check it before writing a scenario on it; one the component lacks is a `TBD` with a section 8 item and a proposal (extend the component, or give the screen its own), never a scenario that assumes it.
+
 ## When the API is explicitly not ready yet
 
 If the user has told you the backend isn't built yet and they want to proceed with provisional shapes (this should already have been flagged during intake), handle it differently from a TBD:

@@ -41,4 +41,4 @@ In a SwiftUI app:
 - **Fakes** are hand-written types that conform to the dependency's protocol, unless the project uses a mocking library; a fake records each call a THEN line names, and a provisional repository's fake conforms to the protocol its stub implements. With TCA, a test overrides the dependency client in `withDependencies` instead.
 - **Persistence.** A test that touches stored data uses an in-memory store (SwiftData: `ModelConfiguration(isStoredInMemoryOnly: true)`), reached the way the code reaches its store, or fakes that dependency; never the app's store on disk.
 - **Platform scenarios.** A SwiftUI app has one platform, `ios`, so a tag changes nothing about the test.
-- **Host tests** are the unit-test target's, run on a simulator. Tests in a UI-test target need the app running. A project without a unit-test target gets one first ("Project layout" in `PLATFORM.md`).
+- **Host tests** are the unit-test target's, run on a simulator, and a local Swift package's own tests, run on the Mac with `swift test`. Tests in a UI-test target need the app running. A project without a unit-test target gets one first ("Project layout" in `PLATFORM.md`).

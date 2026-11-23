@@ -45,7 +45,8 @@ Optional directory at the project root. When a deploy needs a file that is missi
 - `.mobile-store-deploy/` exists → use it.
 - Only `.flutter-store-deploy/` exists → use it as is. It is this skill's pre-rename config name (v0.2.0's) and stays supported. Mention it once and offer to rename it to `.mobile-store-deploy/` — `git mv` when the folder is tracked, plain `mv` when it isn't; never move it unasked. If the user accepts, `<config>` is `.mobile-store-deploy` for the rest of the run.
 - Both exist → stop and ask which one is current; never merge them.
-- Neither → `<config>` is `.mobile-store-deploy`; Setup mode creates files there.
+- Neither, but another folder at the project root holds an `ios.json` or `android.json` (`ls -d .*deploy*/`, or the folder the project's CLAUDE.md names for deploy config): show it and ask whether to use it as `<config>`, after reading its files against the keys below, or to create `.mobile-store-deploy/`. Never create a second config beside it unasked.
+- Neither, and no such folder → `<config>` is `.mobile-store-deploy`; Setup mode creates files there.
 
 Files:
 
@@ -162,7 +163,7 @@ Exit 4 ⇒ invalid config: fix and re-validate. `SERVICE_ACCOUNT_KEY_ERROR` ⇒ 
    Internally: service-account JWT → OAuth token → `edits.insert` → `edits.bundles.upload` → `edits.tracks.update` (track `internal`, `status: completed`, **no releaseNotes**) → `edits.commit`.
 
    - exit 0 → released; no confirmation pause for Phase 1
-   - exit 42 → auth/permission failure (HTTP 401/403): announce the fallback and run Phase 2
+   - exit 42 → auth/permission failure (HTTP 401/403): read the response the script printed above it. A 403 whose message names a Console declaration or policy form (e.g. "You must let us know whether your app includes any health features", or a Data safety, ads or app-content question) is a Console blocker, not a credential problem, and the browser route would stop at the same place: stop, quote the message and name the form the account owner completes in the Play Console (Policy and programs ▸ App content), then run again once it is done. Any other 401/403 (a key Google refuses, a missing permission, an app the account can't see): announce the fallback and run Phase 2
    - any other non-zero exit → **STOP and report. Do not fall back to Phase 2.**
 
 4. **Phase 2 — Claude in Chrome** (only when the key is missing or Phase 1 exited 42):
