@@ -48,4 +48,10 @@ Check: <the script's last RESULT= line>
 
 ## Extending a baseline
 
-When a later change relies on files that the spec's `Not read:` item names, read them the same way, with a fresh budget, starting from the blocks whose code reaches them. Their behavior goes into new blocks, each taking the highest id in the file plus one, or into THEN/AND lines of the blocks they complete; an `Unplaced:` item they settle becomes a block or is dropped. Take the files you read off the item, and delete it once none is left. Change nothing else in the spec, and report as above.
+When a later change relies on files that the spec's `Not read:` item names, read them the same way, with a fresh budget, starting from the blocks whose code reaches them. Their behavior goes into new blocks, each taking the highest id in the file plus one, or into THEN/AND lines of the blocks they complete, or into the lines of the other sections that describe what they show; an `Unplaced:` item they settle becomes a block or is dropped. Take the files you read off the item, and delete it once none is left. Change nothing else in the spec. Report as above, and add one line per block or line you wrote, so the user can see the change without comparing files:
+
+```
+Added: <id> [<Scenario>] — <new block, or the THEN/AND line changed>
+Added: section <n> — <the line changed>
+Settled: <each Unplaced: or uncertain item closed or dropped, and how>, or none
+```
