@@ -10,7 +10,8 @@
     {"file": "mobile-dev-skills-testing-side-check-2026-11-21.md", "sha256": "6f441431f56ee8697c0a349e4a3c84b4f9b0b35b8f2660560b023b8d794e6204", "intaken": "2026-11-21", "version": "0.1.0-alpha.7"},
     {"file": "mobile-dev-skills-testing-side-check-2026-11-23.md", "sha256": "3fe47abd95d5509e8677aeb9a5814d45c04a14720c45f1e42ceec0b1e6c62fee", "intaken": "2026-11-23", "version": "0.1.0-alpha.9"},
     {"file": "mobile-dev-skills-testing-side-check-2026-11-24.md", "sha256": "93b72b4e3c88563acd114f11c9819913ca3dbc242f6bf52ed67662b87dad9ccc", "intaken": "2026-11-24", "version": "0.1.0-alpha.9"},
-    {"file": "mobile-dev-skills-testing-side-check-2026-11-25.md", "sha256": "b831884aad6eb536afde0ba11183f808e9de0832cdbda2ff7063550877d73145", "intaken": "2026-11-25", "version": "0.1.0-alpha.11"}
+    {"file": "mobile-dev-skills-testing-side-check-2026-11-25.md", "sha256": "b831884aad6eb536afde0ba11183f808e9de0832cdbda2ff7063550877d73145", "intaken": "2026-11-25", "version": "0.1.0-alpha.11"},
+    {"file": "mobile-dev-skills-testing-side-check-2026-11-27.md", "sha256": "c6bfe87781f92055aa73df9bb44ba3595c930c6e103284bd0b8194d51f260d86", "intaken": "2026-11-27", "version": "0.1.0-alpha.12"}
   ],
   "feeds": {
     "ecc": {

@@ -18,3 +18,12 @@ One entry per `/maintainer` or `/testing-intake` run, newest last (formats: the 
 - Released: 0.1.0-alpha.12, on the owner's yes after the edits; D2, E19, E20 and C27 became `fixed` with it
 - Pending dry runs: none
 - Ignored instructions: none
+
+## 2026-11-27 — testing-intake @ 33ec227
+- Reports: mobile-dev-skills-testing-side-check-2026-11-27.md (0.1.0-alpha.12)
+- Fed: matched I11 passed, I12 passed, I1 partly, I3 partly, I8 partly, L1 partly, A3 partly; new none
+- Analyzed: nothing to analyze (no new problem, no `failed` match, no `partly` match with a skipped step). I12's `passed` rests on a script that writes a manifest and has its own usage-key list, so the no-manifest and no-list paths added in 0.1.0-alpha.11 didn't run; the owner kept it `passed`
+- Decided: fix none; drop none; open none
+- Released: not asked (no plugin change)
+- Pending dry runs: none
+- Ignored instructions: none
