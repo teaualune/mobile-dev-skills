@@ -162,6 +162,8 @@ Note for brand-new projects: the feature workflow detects the tech stack from ex
 
 The skill discovers these conventions dynamically when they differ, so the bundle works as-is; hardcoding the target project's values just gives it better defaults.
 
+A line in the project's CLAUDE.md that sends feature changes through the workflow starts it too, whether it names the skill (`/mobile-dev-skills:feature-workflow`) or says "the workflow" and the project has no workflow skill of its own.
+
 Code and test rules come from `platforms/standards.md` and the adapter's own `standards.md` (e.g. no `!` null assertion in hand-written Dart, no force unwrap in Swift, no `!!` in Kotlin). A project adds its own, or replaces a bundled rule by naming it, in `.mobile-dev-skills/standards.md`; when you correct generated code for a reason that holds for every feature, the scaffold offers to add the rule there.
 
 Beside its `## Code` and `## Tests` rules, that file may have a `## Workflow` part with two optional lines:

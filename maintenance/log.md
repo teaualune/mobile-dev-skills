@@ -27,3 +27,12 @@ One entry per `/maintainer` or `/testing-intake` run, newest last (formats: the 
 - Released: not asked (no plugin change)
 - Pending dry runs: none
 - Ignored instructions: none
+
+## 2026-11-27 — testing-intake @ d8f6f3c
+- Reports: mobile-dev-skills-testing-side-check-2026-11-27-swiftui.md (0.1.0-alpha.12)
+- Fed: matched A2 partly, B2 partly, B19 partly; new H8, B24, B25, C28
+- Analyzed: R1 H8 fix (the adapter's "No unit-test target" was silent on Xcode's default deployment target for a new target); R2 B24 fix (the entry rule didn't say whether a project CLAUDE.md line counts as asking; redrafted on the owner's word so "the workflow" counts when no project skill is a workflow it could mean, and no project's CLAUDE.md needs rewording); R3 B25 fix (`feature-spec`'s "Anchors already filled stay" was ambiguous for a bare `test: none` on an altered scenario; Phase 2's rules were already consistent); R4 C28 fix (the SwiftUI adapter's "Checks" were silent on a test runner that doesn't start; narrowed on the owner's word to shut down only the destination's simulator)
+- Decided: fix H8, B24, B25, C28; drop none; open none
+- Released: 0.1.0-alpha.13, on the owner's yes after the edits; H8, B24, B25 and C28 became `fixed` with it
+- Pending dry runs: none
+- Ignored instructions: none
